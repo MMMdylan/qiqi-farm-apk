@@ -25,17 +25,22 @@ public class MainActivity extends Activity {
         WebSettings settings = web.getSettings();
 
 
+        // 开启JavaScript
         settings.setJavaScriptEnabled(true);
 
 
+        // WebView存储支持
         settings.setDomStorageEnabled(true);
+        settings.setDatabaseEnabled(true);
 
 
+        // 文件访问
         settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
 
 
 
-        // 创建本地存储
+        // SharedPreferences
         sp = getSharedPreferences(
                 "qiqiFarm",
                 MODE_PRIVATE
@@ -43,7 +48,7 @@ public class MainActivity extends Activity {
 
 
 
-        // JS调用Android接口
+        // JS调用Android
         web.addJavascriptInterface(
                 new AndroidStorage(),
                 "AndroidStorage"
@@ -63,8 +68,7 @@ public class MainActivity extends Activity {
 
 
 
-    public class AndroidStorage {
-
+    private class AndroidStorage {
 
 
         @JavascriptInterface
@@ -79,6 +83,7 @@ public class MainActivity extends Activity {
               .apply();
 
         }
+
 
 
 
