@@ -1413,7 +1413,7 @@ function showFarmList(){
 
 
 
-        "<button class='deleteBtn' onclick='deleteFarm("+farm.id+")'>"+
+        "<button class='deleteBtn' onclick="deleteFarm('"+farm.id+"')" >"+
 
         "删除农场"+
 
@@ -1447,28 +1447,22 @@ function showFarmList(){
 function deleteFarm(id){
 
 
-
     if(confirm("确定删除这个农场吗？")){
 
 
         farms = farms.filter(function(item){
 
-            return item.id != id;
+            return String(item.id) !== String(id);
 
         });
 
 
         saveData();
 
-
-
         showFarmList();
 
 
-
     }
-
-
 
 }
 
