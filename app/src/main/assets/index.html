@@ -1413,7 +1413,7 @@ function showFarmList(){
 
 
 
-        "<button class='deleteBtn' onclick='deleteFarm(" + farm.id + ")'>"+
+        "<button class='deleteBtn' data-id='"+farm.id+"'>"+
 
         "删除农场"+
 
@@ -1426,6 +1426,18 @@ function showFarmList(){
         "</div>";
 
 
+
+    });
+
+
+
+    document.querySelectorAll(".deleteBtn").forEach(function(btn){
+
+        btn.onclick=function(){
+
+            deleteFarm(this.getAttribute("data-id"));
+
+        };
 
     });
 
