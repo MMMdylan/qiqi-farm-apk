@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:theme="@style/AppTheme"
-        android:label="琪琪宝贝专属偷菜助手">
+        android:label="Kiki2.0">
         <activity
             android:name=".MainActivity"
             android:exported="true">
