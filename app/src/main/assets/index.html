@@ -537,9 +537,19 @@ let currentResult=null;
 
 //读取保存数据
 
-let oldData=
+let oldData="";
 
-localStorage.getItem("qiqiFarm");
+
+if(window.AndroidStorage){
+
+    oldData = AndroidStorage.loadData();
+
+}
+else{
+
+    oldData = localStorage.getItem("qiqiFarm");
+
+}
 
 
 
@@ -1257,14 +1267,22 @@ function saveFarm(){
 function saveData(){
 
 
+    let data = JSON.stringify(farms);
 
-    localStorage.setItem(
 
-    "qiqiFarm",
+    if(window.AndroidStorage){
 
-    JSON.stringify(farms)
+        AndroidStorage.saveData(data);
 
-    );
+    }
+    else{
+
+        localStorage.setItem(
+            "qiqiFarm",
+            data
+        );
+
+    }
 
 
 }
