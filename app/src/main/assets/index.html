@@ -1194,6 +1194,8 @@ function saveFarm(){
     let farm={
 
 
+        id:Date.now(),
+
 
         name:name,
 
@@ -1399,7 +1401,7 @@ function showFarmList(){
 
 
 
-        "<button class='deleteBtn' onclick='deleteFarm("+index+")'>"+
+        "<button class='deleteBtn' onclick='deleteFarm("+farm.id+")'>"+
 
         "删除农场"+
 
@@ -1430,16 +1432,18 @@ function showFarmList(){
 // =====================
 
 
-function deleteFarm(index){
+function deleteFarm(id){
 
 
 
     if(confirm("确定删除这个农场吗？")){
 
 
+        farms = farms.filter(function(item){
 
-        farms.splice(index,1);
+            return item.id != id;
 
+        });
 
 
         saveData();
