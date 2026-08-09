@@ -562,6 +562,18 @@ if(oldData){
         farms=JSON.parse(oldData);
 
 
+// 兼容旧版本数据，自动补充唯一ID
+farms.forEach(function(item){
+
+    if(!item.id){
+
+        item.id = Date.now() + Math.random();
+
+    }
+
+});
+
+
 
         // 清理异常数据
 
