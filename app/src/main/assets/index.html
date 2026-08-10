@@ -540,6 +540,9 @@ let currentResult=null;
 let oldData="";
 
 
+let shouldSaveLoadedData=false;
+
+
 if(window.AndroidStorage){
 
     oldData = AndroidStorage.loadData();
@@ -562,12 +565,40 @@ if(oldData){
         farms=JSON.parse(oldData);
 
 
+        if(!Array.isArray(farms)){
+
+            throw new Error("Stored farm data is not an array");
+
+        }
+
+
+        let loadedDataLength=farms.length;
+
+
+        farms=farms.filter(function(item){
+
+            return item &&
+
+            typeof item==="object";
+
+        });
+
+
+        if(farms.length!==loadedDataLength){
+
+            shouldSaveLoadedData=true;
+
+        }
+
+
 // 兼容旧版本数据，自动补充唯一ID
 farms.forEach(function(item){
 
     if(!item.id){
 
         item.id = Date.now() + Math.random();
+
+        shouldSaveLoadedData=true;
 
     }
 
@@ -590,6 +621,13 @@ farms.forEach(function(item){
         });
 
 
+        if(farms.length!==loadedDataLength){
+
+            shouldSaveLoadedData=true;
+
+        }
+
+
 
     }
 
@@ -606,7 +644,11 @@ farms.forEach(function(item){
 
 
 
+if(shouldSaveLoadedData){
+
 saveData();
+
+}
 
 
 
@@ -1306,6 +1348,17 @@ function saveData(){
 // =====================
 
 
+function escapeHtml(value){
+
+    return String(value==null ? "" : value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#39;");
+
+}
+
 function showFarmList(){
 
 
@@ -1353,6 +1406,17 @@ function showFarmList(){
     farms.forEach(function(farm,index){
 
 
+        farm=Object.assign({},farm,{
+
+            name:escapeHtml(farm.name),
+
+            crop:escapeHtml(farm.crop),
+
+            id:escapeHtml(farm.id)
+
+        });
+
+
 
         box.innerHTML +=
 
@@ -1391,7 +1455,11 @@ function showFarmList(){
 
         "剩余："+
 
+        "<span class='remainTime' data-finish-time='"+farm.finishTime+"'>"+
+
         getRemainTime(farm.finishTime)+
+
+        "</span>"+
 
         "</div>"+
 
@@ -1452,6 +1520,23 @@ function showFarmList(){
 
 
 // =====================
+// Update countdowns
+// =====================
+
+function updateCountdowns(){
+
+    document.querySelectorAll(".remainTime").forEach(function(item){
+
+        item.textContent=getRemainTime(
+            item.getAttribute("data-finish-time")
+        );
+
+    });
+
+}
+
+
+// =====================
 // 删除农场
 // =====================
 
@@ -1493,11 +1578,12 @@ setInterval(function(){
 
 
 
-    showFarmList();
+    updateCountdowns();
 
 
 
 },1000);
+// List structure is rendered only when data changes
 
 
 
