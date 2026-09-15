@@ -1,0 +1,9 @@
+<resources>
+<!-- Android 15+ 默认让页面延伸到状态栏和导航栏下面，WebView 没做避让会被遮挡，这里关掉。
+     只在 targetSdk 35 时有效，以后升到 36 需要改成自己处理系统栏区域 -->
+<style name="AppTheme" parent="BaseAppTheme">
+    <item name="android:navigationBarColor">#FFFFFF</item>
+    <item name="android:windowLightNavigationBar">true</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+</style>
+</resources>

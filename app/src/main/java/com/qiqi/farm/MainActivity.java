@@ -32,12 +32,11 @@ public class MainActivity extends Activity {
 
         // WebView存储支持
         settings.setDomStorageEnabled(true);
-        settings.setDatabaseEnabled(true);
 
 
-        // 文件访问
-        settings.setAllowFileAccess(true);
-        settings.setAllowContentAccess(true);
+        // 页面从 file:///android_asset 加载，不受这两项影响；关掉其他文件和 content:// 访问
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
 
 
 
@@ -56,7 +55,7 @@ public class MainActivity extends Activity {
         );
 
 
-        // ?????? alert/confirm ???
+        // 设置 WebChromeClient 后，网页里的 alert/confirm 弹窗才会显示
         web.setWebChromeClient(new WebChromeClient());
 
 
@@ -73,16 +72,17 @@ public class MainActivity extends Activity {
 
 
 
+    // 页面数据按名字分别保存：farmList（农场列表，沿用旧版的名字）、waterPlans、waterStrategies、settings
     private class AndroidStorage {
 
 
         @JavascriptInterface
-        public void saveData(String data){
+        public void save(String key, String data){
 
 
             sp.edit()
               .putString(
-                    "farmList",
+                    key,
                     data
               )
               .apply();
@@ -93,11 +93,11 @@ public class MainActivity extends Activity {
 
 
         @JavascriptInterface
-        public String loadData(){
+        public String load(String key){
 
 
             return sp.getString(
-                    "farmList",
+                    key,
                     ""
             );
 

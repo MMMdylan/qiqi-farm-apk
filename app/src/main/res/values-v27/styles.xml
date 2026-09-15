@@ -1,0 +1,7 @@
+<resources>
+<!-- Android 8.1+ 支持深色导航栏图标：导航栏和页面底部的标签栏一样用白色 -->
+<style name="AppTheme" parent="BaseAppTheme">
+    <item name="android:navigationBarColor">#FFFFFF</item>
+    <item name="android:windowLightNavigationBar">true</item>
+</style>
+</resources>

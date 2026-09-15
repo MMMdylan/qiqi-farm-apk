@@ -1,1603 +1,1201 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>琪琪宝贝专属偷菜助手</title>
-
-
+<title>琪琪宝贝专属农场助手</title>
 <style>
-
-body{
-
-    margin:0;
-
-    padding:20px 0;
-
-    min-height:100vh;
-
-    overflow-x:hidden;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:flex-start;
-
-    font-family:"Microsoft YaHei";
-
-    background:
-    linear-gradient(
-    #b7e6ff,
-    #dff5b8
-    );
-
-    font-size:16px;
-
+:root{
+    --sky:#B7E6FF;--meadow:#DFF5B8;
+    --green-800:#2F5E1E;--green-700:#3F7A2A;--green-600:#4F9433;--green-500:#67AD43;
+    --green-200:#CFE6A8;--green-100:#EAF5DA;--green-50:#F5FAEC;
+    --orange-600:#DD7417;--orange-100:#FDEEDC;
+    --blue-700:#1E6FAF;--blue-100:#E1F0FB;
+    --red-700:#A93C3C;--red-600:#D35656;--red-100:#FCE9E9;
+    --gray-600:#687260;--gray-400:#A3AB9B;--gray-200:#E3E8DC;
+    --text:#2D3926;
 }
-
-
-
-.container{
-
-    width:90%;
-
-    max-width:430px;
-
-    margin:20px auto;
-
-    padding:10px;
-
-}
-
-
-
-/* 顶部标题 */
-
-.title{
-
-    text-align:center;
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    color:#4b7f32;
-
-    margin-top:15px;
-
-    white-space:nowrap;
-
-}
-
-
-
-
-
-.card{
-
-    background:white;
-
-    border-radius:25px;
-
-    padding:20px;
-
-    margin-top:18px;
-
-    box-shadow:
-
-    0 5px 15px rgba(0,0,0,0.15);
-
-}
-
-
-
-
-
-label{
-
-    display:block;
-
-    margin-top:15px;
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    color:#557c38;
-
-}
-
-
-
-
-
-input,select,button{
-
-    width:100%;
-
-    box-sizing:border-box;
-
-    padding:12px;
-
-    margin-top:8px;
-
-    border-radius:12px;
-
-    border:2px solid #b8d98b;
-
-    font-size:16px;
-
-    background:white;
-
-}
-
-
-
-
-
-.timeBox{
-
-    display:flex;
-
-    gap:10px;
-
-}
-
-
-
-.timeBox input{
-
-    width:50%;
-
-}
-
-
-
-
-
-button{
-
-    width:100%;
-
-    height:60px;
-
-    margin-top:20px;
-
-    border-radius:18px;
-
-    border:none;
-
-    background:#72b84b;
-
-    color:white;
-
-    font-size:25px;
-
-    font-weight:bold;
-
-}
-
-
-
-button:active{
-
-    background:#5c9c39;
-
-}
-
-
-
-
-
-.result{
-
-    font-size:24px;
-
-    line-height:2;
-
-    color:#555;
-
-}
-
-
-
-
-
-.highlight{
-
-    color:#e67e22;
-
-    font-size:32px;
-
-    font-weight:bold;
-
-}
-
-
-
-
-
-/* 农场列表 */
-
-.farmListItem{
-
-    background:#f8ffe8;
-
-    border-radius:18px;
-
-    padding:15px;
-
-    margin-top:15px;
-
-    border:2px solid #b8d98b;
-
-}
-
-
-
-
-
-.farmName{
-
-    font-size:26px;
-
-    color:#4b7f32;
-
-    font-weight:bold;
-
-}
-
-
-
-
-
-.smallText{
-
-    font-size:20px;
-
-    margin-top:8px;
-
-}
-
-
-
-
-
-.deleteBtn{
-
-    background:#e87979;
-
-    margin-top:12px;
-
-    height:45px;
-
-    font-size:20px;
-
-}
-
-
-
-
-
-.empty{
-
-    text-align:center;
-
-    color:#999;
-
-    padding:20px;
-
-}
-
-
-
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;font-size:16px;color:var(--text);-webkit-tap-highlight-color:transparent}
+button,input{font-family:inherit}
+
+.app{min-height:100vh;padding:16px 16px 100px;background:linear-gradient(var(--sky),var(--meadow))}
+body.typing .app{padding-bottom:16px}
+.app-title{margin:6px 0 14px;text-align:center;font-size:20px;font-weight:bold;color:var(--green-700);white-space:nowrap}
+
+/* 卡片 */
+.card{margin-bottom:14px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 4px 14px rgba(47,94,30,.10)}
+.card-title{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:19px;color:var(--green-800)}
+.pill{padding:2px 9px;border-radius:999px;background:var(--green-100);font-size:12px;font-weight:normal;color:var(--green-700);white-space:nowrap}
+.card-title .pill{margin-left:auto}
+.placeholder,.empty{padding:10px 0 4px;text-align:center;font-size:15px;color:var(--gray-400)}
+
+/* 输入 */
+.field{margin-bottom:14px}
+.field>label{display:block;margin-bottom:6px;font-size:15px;font-weight:bold;color:var(--green-700)}
+.input{width:100%;height:48px;padding:0 14px;border:1.5px solid var(--green-200);border-radius:12px;outline:none;background:#fff;font-size:17px;color:var(--text)}
+.input:focus{border-color:var(--green-500)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{margin:0;-webkit-appearance:none}
+.row{display:flex;gap:10px}
+.row>.input{flex:1;min-width:0}
+.unit{position:relative;flex:1;min-width:0}
+.unit .input{padding-right:50px}
+.unit span{position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:15px;color:var(--gray-600);pointer-events:none}
+.seg{display:flex;gap:4px;padding:4px;border:1.5px solid var(--green-200);border-radius:14px;background:var(--green-50)}
+.seg button{flex:1;height:40px;border:0;border-radius:10px;background:none;font-size:16px;color:var(--gray-600)}
+.seg button.on{background:var(--green-500);font-weight:bold;color:#fff}
+.side-btn{flex:none;width:76px;height:48px;border:1.5px solid var(--green-200);border-radius:12px;background:var(--green-50);font-size:16px;color:var(--green-700)}
+.target{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;border-radius:12px;background:var(--orange-100);font-size:15px}
+.target b{margin-left:auto;font-size:17px;color:var(--orange-600)}
+.target button{padding:4px 2px;border:0;background:none;font-size:15px;color:var(--green-600);text-decoration:underline}
+.target-edit{display:flex;gap:10px;margin:-6px 0 14px}
+.actions{display:flex;gap:10px}
+.btn{flex:1;height:50px;border:1.5px solid var(--green-500);border-radius:14px;background:#fff;font-size:18px;font-weight:bold;color:var(--green-700)}
+.btn.primary{background:var(--green-500);color:#fff}
+.btn:active{transform:scale(.98)}
+
+/* 计算成熟时间的结果 */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{padding:12px;border-radius:14px;background:var(--green-50)}
+.metric span{display:block;font-size:13px;color:var(--gray-600)}
+.metric b{display:block;margin-top:4px;font-size:21px;color:var(--green-800);white-space:nowrap}
+.metric.hot{background:var(--orange-100)}
+.metric.hot b{color:var(--orange-600)}
+
+/* 浇水计划时间线 */
+.timeline{margin:0;padding:0;list-style:none}
+.timeline li{position:relative;display:flex;gap:10px;padding:0 0 16px 24px}
+.timeline li::before{content:"";position:absolute;top:7px;left:4px;width:12px;height:12px;border-radius:50%;background:var(--blue-700)}
+.timeline li::after{content:"";position:absolute;top:23px;bottom:2px;left:9px;width:2px;background:var(--gray-200)}
+.timeline li:last-child{padding-bottom:4px}
+.timeline li:last-child::after{display:none}
+.timeline time{min-width:56px;font-size:20px;font-weight:bold;color:var(--blue-700)}
+.timeline time small{display:block;font-size:12px;font-weight:normal}
+.timeline li.past::before{background:var(--gray-400)}
+.timeline li.past time{color:var(--gray-400)}
+.timeline b{font-size:16px}
+.timeline em{margin-left:6px;padding:1px 7px;border-radius:999px;background:var(--gray-200);font-size:12px;font-style:normal;color:var(--gray-600)}
+.timeline li.next em{background:var(--blue-100);color:var(--blue-700)}
+.timeline p{margin:2px 0 0;font-size:14px;color:var(--gray-600)}
+strong.goal{font-size:16px;color:var(--orange-600)}
+.note{margin-top:10px;padding:8px 12px;border-radius:10px;background:var(--green-50);font-size:14px;color:var(--gray-600)}
+
+/* 浇水策略 */
+.summary{margin-bottom:10px;font-size:15px;color:var(--gray-600)}
+.summary b{font-size:17px;color:var(--green-800)}
+.plan{margin-top:10px;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:14px}
+.plan.main{border-color:var(--green-500);background:var(--green-50)}
+.plan-head{display:flex;align-items:baseline;gap:8px;font-size:15px;font-weight:bold;color:var(--green-800)}
+.plan-head span{font-size:12px;font-weight:normal;color:var(--gray-600)}
+.step{display:flex;gap:10px;padding:10px 0 2px}
+.step+.step{margin-top:8px;border-top:1px dashed var(--green-200)}
+.step i{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-top:3px;border-radius:50%;background:var(--blue-700);font-size:13px;font-style:normal;color:#fff}
+.plan:not(.main) .step i{background:var(--gray-400)}
+.step-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px}
+.step-row span{font-size:16px;font-weight:bold}
+.step-row time{font-size:20px;font-weight:bold;color:var(--blue-700)}
+.step p{margin:2px 0 0;font-size:14px;color:var(--gray-600)}
+.nw{white-space:nowrap}
+.warn{padding:12px 14px;border-radius:12px;background:var(--red-100);font-size:15px;line-height:1.7;color:var(--red-700)}
+
+/* 列表 */
+.item{margin-top:10px;padding:12px;border:1.5px solid var(--green-100);border-radius:14px;background:var(--green-50)}
+.item:first-child{margin-top:0}
+.item-top{display:flex;align-items:center;gap:8px}
+.item-name{min-width:0;overflow:hidden;font-size:18px;font-weight:bold;color:var(--green-800);white-space:nowrap;text-overflow:ellipsis}
+.item-top .pill{border:1px solid var(--green-200);background:#fff}
+.del{flex:none;height:32px;margin-left:auto;padding:0 12px;border:1.5px solid var(--red-100);border-radius:10px;background:#fff;font-size:14px;color:var(--red-600)}
+.countdown{margin-top:8px;font-size:22px;font-weight:bold;color:var(--orange-600)}
+.countdown small{margin-right:4px;font-size:13px;font-weight:normal;color:var(--gray-600)}
+.item.ripe .countdown{color:var(--green-600)}
+.sub{margin-top:4px;font-size:14px;color:var(--gray-600)}
+.next{margin-top:8px;font-size:14px;color:var(--gray-600)}
+.next b{margin-right:4px;font-size:18px;color:var(--blue-700)}
+.mini{margin:6px 0 0;padding:0;list-style:none;font-size:14px;line-height:1.8;color:var(--gray-600)}
+.mini .passed,.mini .alt{color:var(--gray-400)}
+.item.finished{border-color:var(--gray-200);background:#fff}
+.item.finished .item-name,.item.finished .next b{color:var(--gray-400)}
+
+/* 底部标签栏 */
+.tabbar{position:fixed;right:0;bottom:0;left:0;display:flex;padding:6px 8px 8px;border-top:1px solid var(--gray-200);background:#fff;box-shadow:0 -2px 10px rgba(47,94,30,.06)}
+body.typing .tabbar{display:none}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0;border:0;background:none;font-size:13px;color:var(--gray-600)}
+.tabbar .ic{display:flex;align-items:center;justify-content:center;width:58px;height:30px;border-radius:15px;font-size:19px}
+.tabbar button.on{font-weight:bold;color:var(--green-700)}
+.tabbar button.on .ic{background:var(--green-100)}
 </style>
-
-
 </head>
-
-
 <body>
+<div class="app">
 
+    <div class="app-title">🌱 琪琪宝贝专属农场助手 🌱</div>
 
-<div class="container">
+    <!-- 计算成熟时间 -->
+    <section class="page" data-page="maturity">
+        <div class="card">
+            <h2 class="card-title">⏳ 计算成熟时间</h2>
+            <div class="field">
+                <label for="m-name">农场名称</label>
+                <input class="input" id="m-name" placeholder="例如：Aura.情">
+            </div>
+            <div class="field">
+                <label>作物类型</label>
+                <div class="seg" id="m-crop">
+                    <button type="button" data-crop="hero" class="on">🌸 英雄作物</button>
+                    <button type="button" data-crop="eco">🍑 经济作物</button>
+                </div>
+            </div>
+            <div class="field">
+                <label>剩余成熟时间</label>
+                <div class="row">
+                    <div class="unit"><input class="input" id="m-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
+                    <div class="unit"><input class="input" id="m-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+                </div>
+            </div>
+            <div class="field">
+                <label>剩余水分时间</label>
+                <div class="row">
+                    <div class="unit"><input class="input" id="m-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
+                    <div class="unit"><input class="input" id="m-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+                </div>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn primary" id="m-calc">计算</button>
+                <button type="button" class="btn" id="m-save">保存到列表</button>
+            </div>
+        </div>
 
+        <div class="card">
+            <h2 class="card-title">📋 计算结果<span class="pill" id="m-time" hidden></span></h2>
+            <div id="m-result"><div class="placeholder">填好上面的内容，点「计算」</div></div>
+        </div>
 
+        <div class="card">
+            <h2 class="card-title">🌾 农场列表<span class="pill" id="m-count" hidden></span></h2>
+            <div id="m-list"></div>
+        </div>
+    </section>
 
-<div class="title">
+    <!-- 计算浇水时间（英雄作物） -->
+    <section class="page" data-page="watering" hidden>
+        <div class="card">
+            <h2 class="card-title">💧 计算浇水时间<span class="pill">英雄作物</span></h2>
+            <div class="field">
+                <label for="w-name">农场名称</label>
+                <input class="input" id="w-name" placeholder="例如：琪琪的农场">
+            </div>
+            <div class="field">
+                <label for="w-plant">种下时间</label>
+                <div class="row">
+                    <input class="input" id="w-plant" type="datetime-local">
+                    <button type="button" class="side-btn" id="w-now">现在</button>
+                </div>
+            </div>
+            <div class="target">🎯 目标剩余时间<b class="target-value"></b><button type="button" class="target-toggle">修改</button></div>
+            <div class="target-edit" hidden>
+                <div class="unit"><input class="input target-h" type="number" inputmode="numeric" min="0"><span>小时</span></div>
+                <div class="unit"><input class="input target-m" type="number" inputmode="numeric" min="0"><span>分钟</span></div>
+                <button type="button" class="side-btn target-ok">确定</button>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn primary" id="w-calc">计算</button>
+                <button type="button" class="btn" id="w-save">保存到列表</button>
+            </div>
+        </div>
 
-🌱 琪琪宝贝专属偷菜助手 🌱
+        <div class="card">
+            <h2 class="card-title">📋 浇水计划</h2>
+            <div id="w-result"><div class="placeholder">选好种下时间，点「计算」</div></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">💧 浇水时间列表<span class="pill" id="w-count" hidden></span></h2>
+            <div id="w-list"></div>
+        </div>
+    </section>
+
+    <!-- 计算浇水策略（英雄作物） -->
+    <section class="page" data-page="strategy" hidden>
+        <div class="card">
+            <h2 class="card-title">🧭 计算浇水策略<span class="pill">英雄作物</span></h2>
+            <div class="field">
+                <label for="s-name">农场名称</label>
+                <input class="input" id="s-name" placeholder="例如：Aura.情">
+            </div>
+            <div class="field">
+                <label>当前剩余时间</label>
+                <div class="row">
+                    <div class="unit"><input class="input" id="s-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
+                    <div class="unit"><input class="input" id="s-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+                </div>
+            </div>
+            <div class="field">
+                <label>当前水分时间</label>
+                <div class="row">
+                    <div class="unit"><input class="input" id="s-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
+                    <div class="unit"><input class="input" id="s-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+                </div>
+            </div>
+            <div class="target">🎯 目标剩余时间<b class="target-value"></b><button type="button" class="target-toggle">修改</button></div>
+            <div class="target-edit" hidden>
+                <div class="unit"><input class="input target-h" type="number" inputmode="numeric" min="0"><span>小时</span></div>
+                <div class="unit"><input class="input target-m" type="number" inputmode="numeric" min="0"><span>分钟</span></div>
+                <button type="button" class="side-btn target-ok">确定</button>
+            </div>
+            <div class="actions">
+                <button type="button" class="btn primary" id="s-calc">计算</button>
+                <button type="button" class="btn" id="s-save">保存到列表</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">📋 浇水策略<span class="pill" id="s-time" hidden></span></h2>
+            <div id="s-result"><div class="placeholder">填好上面的内容，点「计算」</div></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">🧭 浇水策略列表<span class="pill" id="s-count" hidden></span></h2>
+            <div id="s-list"></div>
+        </div>
+    </section>
+
+    <nav class="tabbar">
+        <button type="button" data-tab="maturity"><span class="ic">⏳</span>成熟时间</button>
+        <button type="button" data-tab="watering"><span class="ic">💧</span>浇水时间</button>
+        <button type="button" data-tab="strategy"><span class="ic">🧭</span>浇水策略</button>
+    </nav>
 
 </div>
-
-
-
-
-
-
-<div class="card">
-
-
-<label>
-
-🌾 农场名称
-
-</label>
-
-
-<input id="farmName"
-
-placeholder="例如：Aura.情">
-
-
-
-
-
-
-<label>
-
-🌱 作物类型
-
-</label>
-
-
-<select id="type">
-
-
-<option value="hero">
-
-🌸 英雄作物
-
-</option>
-
-
-<option value="eco">
-
-🍑 经济作物
-
-</option>
-
-
-</select>
-
-
-
-
-
-
-<label>
-
-⏳ 剩余成熟时间
-
-</label>
-
-
-<div class="timeBox">
-
-<input 
-id="timeHour"
-type="number"
-inputmode="numeric"
-placeholder="小时"
-min="0">
-
-<input 
-id="timeMin"
-type="number"
-inputmode="numeric"
-placeholder="分钟"
-min="0"
-max="59">
-
-</div>
-
-
-
-
-
-
-<label>
-
-💧 剩余水分维持时间
-
-</label>
-
-
-<div class="timeBox">
-
-<input 
-id="waterHour"
-type="number"
-inputmode="numeric"
-placeholder="小时"
-min="0">
-
-<input 
-id="waterMin"
-type="number"
-inputmode="numeric"
-placeholder="分钟"
-min="0"
-max="59">
-
-</div>
-
-
-
-
-
-
-<button onclick="calc()">
-
-💧 计算成熟时间
-
-</button>
-
-
-
-
-<button onclick="saveFarm()">
-
-🌾 保存农场
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card result" id="result">
-
-等待计算...
-
-</div>
-
-
-
-
-
-
-
-<div class="card">
-
-
-<h3>
-
-🌱 农场列表
-
-</h3>
-
-
-<div id="farmList">
-
-
-<div class="empty">
-
-暂无农场
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
 
 <script>
 
 // =====================
-// 初始化时间选择
+// 作物规则（时间单位：分钟）
 // =====================
 
+const CROPS={
+    hero:{ name:"英雄作物", label:"🌸英雄作物", total:1920, maxWater:640, reduce:160 },
+    eco:{ name:"经济作物", label:"🍑经济作物", total:960, maxWater:320, reduce:80 }
+};
 
-function initSelect(id,max){
+// 计算浇水时间：种下 5 小时后第一次浇水
+const FIRST_WATER_AFTER=300;
 
-    let obj=document.getElementById(id);
+// 目标剩余时间默认 11小时30分
+const DEFAULT_TARGET=690;
+
+const MINUTE=60000;
 
 
-    for(let i=0;i<=max;i++){
-
-        obj.innerHTML +=
-
-        "<option value='"+i+"'>"+i+"</option>";
-
-    }
-
+// 浇水立刻缩短的时间：补进去的水越多缩短越多，从空水浇满缩短 reduce
+function waterReduce(crop,water){
+    return crop.reduce*(crop.maxWater-water)/crop.maxWater;
 }
 
-
-
-// =====================
-// 数据
-// =====================
-
-
-let farms=[];
-
-
-let currentResult=null;
-
-
-
-
-
-//读取保存数据
-
-let oldData="";
-
-
-let shouldSaveLoadedData=false;
-
-
-if(window.AndroidStorage){
-
-    oldData = AndroidStorage.loadData();
-
-}
-else{
-
-    oldData = localStorage.getItem("qiqiFarm");
-
+// 刚种下会自动把空水浇满，剩余成熟时间 = 总时间 - 满额缩短
+function plantRemain(crop){
+    return crop.total-crop.reduce;
 }
 
-
-
-if(oldData){
-
-
-    try{
-
-
-        farms=JSON.parse(oldData);
-
-
-        if(!Array.isArray(farms)){
-
-            throw new Error("Stored farm data is not an array");
-
-        }
-
-
-        let loadedDataLength=farms.length;
-
-
-        farms=farms.filter(function(item){
-
-            return item &&
-
-            typeof item==="object";
-
-        });
-
-
-        if(farms.length!==loadedDataLength){
-
-            shouldSaveLoadedData=true;
-
-        }
-
-
-// 兼容旧版本数据，自动补充唯一ID
-farms.forEach(function(item){
-
-    if(!item.id){
-
-        item.id = Date.now() + Math.random();
-
-        shouldSaveLoadedData=true;
-
-    }
-
-});
-
-
-
-        // 清理异常数据
-
-        farms=
-
-        farms.filter(function(item){
-
-
-            return item.finishTime &&
-
-            !isNaN(Number(item.finishTime));
-
-
-        });
-
-
-        if(farms.length!==loadedDataLength){
-
-            shouldSaveLoadedData=true;
-
-        }
-
-
-
-    }
-
-    catch(e){
-
-
-        farms=[];
-
-
-    }
-
-
-}
-
-
-
-if(shouldSaveLoadedData){
-
-saveData();
-
-}
-
-
-
-
-
-
-
-// =====================
-// 时间格式
-// =====================
-
-
-function format(min){
-
-
-    min=Math.round(min);
-
-
-
-    let h=Math.floor(min/60);
-
-
-
-    let m=min%60;
-
-
-
-    if(h>0){
-
-
-        return h+"小时"+m+"分钟";
-
-
-    }
-
-
-
-    return m+"分钟";
-
-
-}
-
-
-
-
-
-
-
-
-// =====================
-// 剩余倒计时
-// =====================
-
-
-function getRemainTime(time){
-
-
-
-    time=Number(time);
-
-
-
-    if(!time || isNaN(time)){
-
-
-        return "数据错误";
-
-
-    }
-
-
-
-
-
-    let diff=
-
-    time-Date.now();
-
-
-
-
-
-
-    if(diff<=0){
-
-
-        return "已经成熟 🌱";
-
-
-    }
-
-
-
-
-
-
-
-    let total=
-
-    Math.floor(diff/1000);
-
-
-
-
-
-
-    let h=
-
-    Math.floor(total/3600);
-
-
-
-
-
-
-    let m=
-
-    Math.floor(
-
-    (total%3600)/60
-
-    );
-
-
-
-
-
-
-    let s=
-
-    total%60;
-
-
-
-
-
-
-    return (
-
-    h.toString().padStart(2,"0")
-
-    +"小时"+
-
-    m.toString().padStart(2,"0")
-
-    +"分钟"+
-
-    s.toString().padStart(2,"0")
-
-    +"秒"
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-
-// =====================
-// 日期+时间显示
-// =====================
-
-
-function getFinishClock(time){
-
-
-
-    let d=
-
-    new Date(Number(time));
-
-
-
-
-
-    let month=
-
-    d.getMonth()+1;
-
-
-
-
-
-    let day=
-
-    d.getDate();
-
-
-
-
-
-    let h=
-
-    d.getHours()
-
-    .toString()
-
-    .padStart(2,"0");
-
-
-
-
-
-
-    let m=
-
-    d.getMinutes()
-
-    .toString()
-
-    .padStart(2,"0");
-
-
-
-
-
-
-
-    return (
-
-    month+
-
-    "月"+
-
-    day+
-
-    "日 "+
-
-    h+
-
-    ":"+
-
-    m
-
-    );
-
-
-
-}
-
-
-
-
-
-
-
-
-
-// =====================
-// 核心计算
-// =====================
-
-
-function calc(){
-
-
-
-
-
-    let T=
-
-
-    (Number(timeHour.value)||0)*60+
-
-    (Number(timeMin.value)||0);
-
-
-
-
-
-
-
-
-    let W=
-
-
-    (Number(waterHour.value)||0)*60+
-
-    (Number(waterMin.value)||0);
-
-
-
-
-
-
-
-
-
-    let maxWater;
-
-    let reduce;
-
-
-
-
-
-
-
-
-
-    if(type.value=="hero"){
-
-
-
-        //英雄作物
-
-        maxWater=640;
-
-
-        reduce=160;
-
-
-
-    }
-
-    else{
-
-
-
-        //经济作物
-
-        maxWater=320;
-
-
-        reduce=80;
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-    // 当前浇水缩短
-
-
-    let nowReduce=
-
-
-
-    reduce*
-
-    (maxWater-W)
-
-    /
-
-    maxWater;
-
-
-
-
-
-
-
-
-
-    // 浇水后剩余
-
-
-    let after=
-
-
-
-    T-nowReduce;
-
-
-
-
-
-
-    if(after<0){
-
-
-        after=0;
-
-
-    }
-
-
-
-
-
-
-
-
-
-    // 最快成熟
-
-
-    let fastest=
-
-
-
-    after/
-
-    (1+reduce/maxWater);
-
-
-
-
-
-
-
-
-
-    // 最终成熟时间戳
-
-
-    let finishTime=
-
-
-
-    Date.now()+
-
-
-
-    Math.round(
-
-    fastest*60*1000
-
-    );
-
-
-
-
-
-
-
-
-
-
-    currentResult={
-
-
-
-        reduce:nowReduce,
-
-
+// 计算成熟时间：现在浇水缩短多少、浇后剩余，以及之后一直补满水的最快成熟时间
+function calcMaturity(crop,remain,water){
+    let reduce=waterReduce(crop,water);
+    let after=Math.max(remain-reduce,0);
+    return {
+        reduce:reduce,
         after:after,
-
-
-        fastest:fastest,
-
-
-        finishTime:Number(finishTime)
-
-
-
+        fastest:after/(1+crop.reduce/crop.maxWater)
     };
-
-
-
-
-
-
-
-
-
-    document.getElementById("result").innerHTML=
-
-
-
-
-
-
-    "💧 当前浇水缩短：<br>"+
-
-
-
-    "<span class='highlight'>"+
-
-    format(nowReduce)+
-
-    "</span>"+
-
-
-
-
-
-    "<br><br>🌱 浇水后剩余：<br>"+
-
-
-
-    "<span class='highlight'>"+
-
-    format(after)+
-
-    "</span>"+
-
-
-
-
-
-    "<br><br>⚡ 最快成熟时间：<br>"+
-
-
-
-    "<span class='highlight'>"+
-
-    format(fastest)+
-
-    "</span>"+
-
-
-
-
-
-    "<br><br>🕒 预计成熟：<br>"+
-
-
-
-    "<span class='highlight'>"+
-
-    getFinishClock(finishTime)+
-
-    "</span>";
-
-
-
 }
 
-
-
-
-
-
-
-
-
-// =====================
-// 保存农场
-// =====================
-
-
-function saveFarm(){
-
-
-
-    if(!currentResult){
-
-
-        alert("请先计算成熟时间");
-
-
-        return;
-
-
+// 浇水策略：从当前状态出发，算出怎样浇水能让浇完后正好剩 target。
+// 返回的时间都是"从现在起再过多少分钟"。水干了作物照常长，只是少了补水带来的缩短。
+function planStrategy(crop,remain,water,target){
+    let rate=crop.reduce/crop.maxWater;
+    let afterNow=remain-waterReduce(crop,water);
+    if(afterNow<target){
+        return { possible:false, afterNow:afterNow };
     }
 
-
-
-
-
-
-    let name=
-
-
-    document.getElementById("farmName")
-
-    .value.trim();
-
-
-
-
-
-
-
-    if(name==""){
-
-
-        alert("请输入农场名称");
-
-
-        return;
-
-
+    // 水一直不干时，浇水每推迟 1 分钟，浇后剩余就少 1+rate 分钟
+    let waterAt=(afterNow-target)/(1+rate);
+    let plan={ possible:true, afterNow:afterNow, waterAt:waterAt, refills:[], noRefillAt:null };
+    if(waterAt<=water){
+        return plan;
     }
 
+    // 要等的时间比剩余水分长：中途补水让水一直不干，补水早晚不影响最后浇水的时间。
+    // 每次补水不能太早（否则最后浇水前水又会干），也不能太晚（水已经干了）；
+    // 只补一次时给出时间范围，要补多次时取范围中间的具体时间。
+    let count=Math.ceil((waterAt-water)/crop.maxWater);
+    for(let i=1;i<=count;i++){
+        let from=Math.max(0,waterAt-(count-i+1)*crop.maxWater);
+        let to=water+(i-1)*crop.maxWater;
+        plan.refills.push(count===1 ? { from:from, to:to } : { at:(from+to)/2 });
+    }
 
+    // 不补水：等水干了再浇一次，这次按满额缩短
+    plan.noRefillAt=remain-crop.reduce-target;
+    return plan;
+}
 
-
-
-
-
-
-    let farm={
-
-
-        id:Date.now(),
-
-
-        name:name,
-
-
-
-        crop:
-
-
-
-        type.value=="hero"
-
-        ?
-
-        "🌸英雄作物"
-
-        :
-
-        "🍑经济作物",
-
-
-
-
-
-        finishTime:
-
-
-
-        Number(currentResult.finishTime)
-
-
-
+// 计算浇水时间（英雄作物）：种下 5 小时后第一次浇水，再按浇水策略算第二次浇水
+function planWatering(target){
+    let crop=CROPS.hero;
+    let remain=plantRemain(crop);
+    let firstAfter=remain-FIRST_WATER_AFTER-waterReduce(crop,Math.max(crop.maxWater-FIRST_WATER_AFTER,0));
+    return {
+        plantRemain:remain,
+        firstAfter:firstAfter,
+        plan:planStrategy(crop,firstAfter,crop.maxWater,target)
     };
+}
 
+// 把"从 start 起再过多少分钟"的方案换成具体时间点，最后一次浇水标记为 final
+function planToSteps(plan,start,waterTitle,target){
+    function at(min){
+        return start+Math.round(min*MINUTE);
+    }
+    let steps=plan.refills.map(function(r){
+        return r.at!==undefined
+            ? { type:"refill", at:at(r.at) }
+            : { type:"refill", from:at(r.from), to:at(r.to) };
+    });
+    steps.push({ type:"water", title:waterTitle, at:at(plan.waterAt), remain:target, final:true });
+    return {
+        steps:steps,
+        alt:plan.noRefillAt===null ? null : at(plan.noRefillAt)
+    };
+}
 
+function buildWatering(plantTime,target){
+    let r=planWatering(target);
+    let record={ possible:r.plan.possible, plantTime:plantTime, target:target, firstAfter:r.firstAfter };
+    if(!r.plan.possible){
+        return record;
+    }
+    let firstAt=plantTime+FIRST_WATER_AFTER*MINUTE;
+    let rest=planToSteps(r.plan,firstAt,"第二次浇水",target);
+    record.steps=[
+        { type:"plant", at:plantTime, remain:r.plantRemain },
+        { type:"water", title:"第一次浇水", at:firstAt, remain:r.firstAfter }
+    ].concat(rest.steps);
+    record.alt=rest.alt;
+    record.ripeAt=lastStep(record.steps).at+target*MINUTE;
+    return record;
+}
 
-
-
-
-
-
-    farms.push(farm);
-
-
-
-    saveData();
-
-
-
-    showFarmList();
-
-
-
-    alert("保存成功");
-
-
-
+function buildStrategy(now,remain,water,target){
+    let plan=planStrategy(CROPS.hero,remain,water,target);
+    let record={ possible:plan.possible, calcTime:now, remain:remain, water:water, target:target, afterNow:plan.afterNow };
+    if(!plan.possible){
+        return record;
+    }
+    let rest=planToSteps(plan,now,"浇水",target);
+    record.steps=rest.steps;
+    record.alt=rest.alt;
+    return record;
 }
 
 
 
-
-
-
-
-
 // =====================
-// 保存数据
+// 时间显示
 // =====================
 
-
-function saveData(){
-
-
-    let data = JSON.stringify(farms);
-
-
-    if(window.AndroidStorage){
-
-        AndroidStorage.saveData(data);
-
-    }
-    else{
-
-        localStorage.setItem(
-            "qiqiFarm",
-            data
-        );
-
-    }
-
-
+function pad2(n){
+    return String(n).padStart(2,"0");
 }
 
-// =====================
-// 显示农场列表
-// =====================
+// 分钟 → "X小时YY分"
+function fmtDur(min){
+    min=Math.max(Math.round(min),0);
+    let h=Math.floor(min/60);
+    let m=min%60;
+    if(h===0){
+        return m+"分";
+    }
+    return m===0 ? h+"小时" : h+"小时"+pad2(m)+"分";
+}
 
+// 毫秒 → 倒计时 "X小时YY分ZZ秒"
+function fmtCountdown(ms){
+    let total=Math.max(Math.floor(ms/1000),0);
+    let h=Math.floor(total/3600);
+    let m=Math.floor(total%3600/60);
+    return (h>0 ? h+"小时"+pad2(m)+"分" : m+"分")+pad2(total%60)+"秒";
+}
+
+// 某个时间点是哪天："今天" / "明天" / "9月17日"
+function dayLabel(ms){
+    let day=new Date(ms);
+    day.setHours(0,0,0,0);
+    let today=new Date();
+    today.setHours(0,0,0,0);
+    let names={ "-1":"昨天", "0":"今天", "1":"明天", "2":"后天" };
+    return names[Math.round((day-today)/86400000)] || (day.getMonth()+1)+"月"+day.getDate()+"日";
+}
+
+function hhmm(ms){
+    let d=new Date(ms);
+    return pad2(d.getHours())+":"+pad2(d.getMinutes());
+}
+
+// 时间点（取整到分钟）→ "22:16" / "明天 09:46"；showToday 为 true 时今天也写上"今天"
+function clock(ms,showToday){
+    ms=Math.round(ms/MINUTE)*MINUTE;
+    let label=dayLabel(ms);
+    return label==="今天" && !showToday ? hhmm(ms) : label+" "+hhmm(ms);
+}
+
+// 时间线左边的时间：不是今天时在下面用小字写日期
+function clockHtml(ms){
+    ms=Math.round(ms/MINUTE)*MINUTE;
+    let label=dayLabel(ms);
+    return hhmm(ms)+(label==="今天" ? "" : "<small>"+label+"</small>");
+}
+
+// 离某个时间点还有多久："还有 X" / "就是现在" / "已过"
+function untilText(at,now){
+    let diff=at-now;
+    if(diff>MINUTE){
+        return "还有 "+fmtDur(Math.ceil(diff/MINUTE));
+    }
+    return diff>-MINUTE ? "就是现在" : "已过";
+}
 
 function escapeHtml(value){
-
     return String(value==null ? "" : value)
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#39;");
-
 }
 
-function showFarmList(){
+function toInputTime(ms){
+    let d=new Date(ms);
+    return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate())+"T"+pad2(d.getHours())+":"+pad2(d.getMinutes());
+}
 
 
+
+// =====================
+// 浇水步骤
+// =====================
+
+const NUMS="①②③④⑤⑥⑦⑧⑨⑩";
+
+function stepEnd(step){
+    return step.to!==undefined ? step.to : step.at;
+}
+
+function lastStep(steps){
+    return steps[steps.length-1];
+}
+
+// 还没做的第一步（种下不算）；到点后一分钟内仍算"就是现在"
+function nextStep(steps,now){
+    return steps.find(function(step){
+        return step.type!=="plant" && stepEnd(step)>=now-MINUTE;
+    }) || null;
+}
+
+function refillTime(step){
+    return step.from!==undefined ? clock(step.from)+" ~ "+clock(step.to) : clock(step.at);
+}
+
+function nextText(step,now){
+    if(!step){
+        return "<b>✓ 已全部浇完</b>";
+    }
+    if(step.type==="refill" && step.from!==undefined){
+        if(now<step.from-MINUTE){
+            return "<b>"+refillTime(step)+" 补水</b>还有 "+fmtDur(Math.ceil((step.from-now)/MINUTE))+" 开始";
+        }
+        return "<b>"+clock(step.to)+" 前补水</b>还剩 "+fmtDur(Math.floor((step.to-now)/MINUTE));
+    }
+    return "<b>"+clock(step.at)+" "+(step.type==="refill" ? "补水" : step.title)+"</b>"+untilText(step.at,now);
+}
+
+// 列表里的步骤清单；已过的步骤由 refreshLive 打勾
+function miniSteps(steps,altText){
+    let n=0;
+    let items=steps.filter(function(step){
+        return step.type!=="plant";
+    }).map(function(step){
+        let num=NUMS.charAt(n++) || String(n);
+        let text=step.type==="refill"
+            ? "补水 "+refillTime(step)
+            : step.title+" "+clock(step.at)+(step.final ? " → 剩 "+fmtDur(step.remain) : "");
+        return "<li data-end='"+stepEnd(step)+"' data-num='"+num+"'><span class='mark'>"+num+"</span> "+text+"</li>";
+    });
+    if(altText){
+        items.push("<li class='alt'>"+altText+"</li>");
+    }
+    return "<ul class='mini'>"+items.join("")+"</ul>";
+}
+
+
+
+// =====================
+// 数据存取：APP 里存到 SharedPreferences，浏览器里存到 localStorage
+// =====================
+
+const STORE={ farms:"farmList", plans:"waterPlans", strategies:"waterStrategies", settings:"settings" };
+
+let farms=[];
+let plans=[];
+let strategies=[];
+let settings={};
+
+function storageLoad(key){
+    try{
+        if(window.AndroidStorage){
+            return AndroidStorage.load(key) || "";
+        }
+        return localStorage.getItem("qiqiFarm."+key) || "";
+    }
+    catch(e){
+        return "";
+    }
+}
+
+function storageSave(key,value){
+    try{
+        if(window.AndroidStorage){
+            AndroidStorage.save(key,value);
+        }
+        else{
+            localStorage.setItem("qiqiFarm."+key,value);
+        }
+    }
+    catch(e){
+    }
+}
+
+function loadList(key,isValid){
+    let list;
+    try{
+        list=JSON.parse(storageLoad(key) || "[]");
+    }
+    catch(e){
+        list=[];
+    }
+    if(!Array.isArray(list)){
+        return [];
+    }
+    return list.filter(function(item){
+        return item && typeof item==="object" && isValid(item);
+    });
+}
+
+function saveList(key,list){
+    storageSave(key,JSON.stringify(list));
+}
+
+function saveSettings(){
+    storageSave(STORE.settings,JSON.stringify(settings));
+}
+
+function isNum(value){
+    return typeof value==="number" && isFinite(value);
+}
+
+function hasValidSteps(item){
+    return Array.isArray(item.steps) && item.steps.length>0 && item.steps.every(function(step){
+        return step && (isNum(step.at) || (isNum(step.from) && isNum(step.to)));
+    });
+}
+
+function loadAll(){
+    // 农场列表沿用旧版的存储格式
+    farms=loadList(STORE.farms,function(item){
+        return item.finishTime && !isNaN(Number(item.finishTime));
+    });
+    let idAdded=false;
+    farms.forEach(function(item){
+        // 兼容旧版本数据，自动补充唯一ID
+        if(!item.id){
+            item.id=Date.now()+Math.random();
+            idAdded=true;
+        }
+    });
+    if(idAdded){
+        saveList(STORE.farms,farms);
+    }
+
+    plans=loadList(STORE.plans,hasValidSteps);
+    strategies=loadList(STORE.strategies,hasValidSteps);
+
+    try{
+        settings=JSON.parse(storageLoad(STORE.settings) || "{}") || {};
+    }
+    catch(e){
+        settings={};
+    }
+    if(!(settings.target>0)){
+        settings.target=DEFAULT_TARGET;
+    }
+}
+
+
+
+// =====================
+// 页面显示
+// =====================
+
+function setCount(id,count){
+    let pill=document.getElementById(id);
+    pill.textContent=count+" 个";
+    pill.hidden=count===0;
+}
+
+function itemTop(name,pill,id){
+    return "<div class='item-top'>"+
+        "<div class='item-name'>"+escapeHtml(name)+"</div>"+
+        "<span class='pill'>"+escapeHtml(pill)+"</span>"+
+        "<button type='button' class='del' data-id='"+escapeHtml(id)+"'>删除</button>"+
+    "</div>";
+}
+
+function cropPill(crop){
+    crop=String(crop || "");
+    if(crop.indexOf("英雄")>=0){
+        return "🌸 英雄";
+    }
+    return crop.indexOf("经济")>=0 ? "🍑 经济" : crop;
+}
+
+function renderFarms(){
     farms.sort(function(a,b){
-
         return Number(a.finishTime)-Number(b.finishTime);
-
     });
+    setCount("m-count",farms.length);
+    document.getElementById("m-list").innerHTML=farms.length===0
+        ? "<div class='empty'>还没有保存的农场</div>"
+        : farms.map(function(farm){
+            let finishTime=Number(farm.finishTime);
+            return "<div class='item'>"+
+                itemTop(farm.name,cropPill(farm.crop),farm.id)+
+                "<div class='countdown' data-finish='"+finishTime+"'></div>"+
+                "<div class='sub'>🕒 预计成熟 "+clock(finishTime,true)+"</div>"+
+            "</div>";
+        }).join("");
+    refreshLive();
+}
 
+// 按下一步的时间排序，全部浇完的放最后
+function sortByNext(list){
+    let now=Date.now();
+    list.sort(function(a,b){
+        let na=nextStep(a.steps,now);
+        let nb=nextStep(b.steps,now);
+        if(na && nb){
+            return stepEnd(na)-stepEnd(nb);
+        }
+        if(na || nb){
+            return na ? -1 : 1;
+        }
+        return stepEnd(lastStep(b.steps))-stepEnd(lastStep(a.steps));
+    });
+}
 
-    let box=
+function renderPlans(){
+    sortByNext(plans);
+    setCount("w-count",plans.length);
+    document.getElementById("w-list").innerHTML=plans.length===0
+        ? "<div class='empty'>还没有保存的浇水时间</div>"
+        : plans.map(function(plan){
+            let alt=isNum(plan.alt) ? "不补水："+clock(plan.alt)+" 浇第二次 → 剩 "+fmtDur(plan.target) : "";
+            return "<div class='item' data-kind='plans' data-id='"+escapeHtml(plan.id)+"'>"+
+                itemTop(plan.name,"种下 "+clock(plan.plantTime),plan.id)+
+                "<div class='next'></div>"+
+                miniSteps(plan.steps,alt)+
+            "</div>";
+        }).join("");
+    refreshLive();
+}
 
-    document.getElementById("farmList");
+function renderStrategies(){
+    sortByNext(strategies);
+    setCount("s-count",strategies.length);
+    document.getElementById("s-list").innerHTML=strategies.length===0
+        ? "<div class='empty'>还没有保存的浇水策略</div>"
+        : strategies.map(function(item){
+            let alt=isNum(item.alt) ? "不补水："+clock(item.alt)+" 浇一次 → 剩 "+fmtDur(item.target) : "";
+            return "<div class='item' data-kind='strategies' data-id='"+escapeHtml(item.id)+"'>"+
+                itemTop(item.name,"算于 "+clock(item.calcTime),item.id)+
+                "<div class='next'></div>"+
+                miniSteps(item.steps,alt)+
+            "</div>";
+        }).join("");
+    refreshLive();
+}
 
+function renderTarget(){
+    document.querySelectorAll(".target-value").forEach(function(el){
+        el.textContent=fmtDur(settings.target);
+    });
+}
 
+function renderAll(){
+    renderTarget();
+    renderFarms();
+    renderPlans();
+    renderStrategies();
+}
 
+function metric(label,value,extraClass){
+    return "<div class='metric"+extraClass+"'><span>"+label+"</span><b>"+value+"</b></div>";
+}
 
+function maturityResultHtml(result){
+    return "<div class='metrics'>"+
+        metric("💧 浇水缩短",fmtDur(result.reduce),"")+
+        metric("🌱 浇水后剩余",fmtDur(result.after),"")+
+        metric("⚡ 最快成熟",fmtDur(result.fastest),"")+
+        metric("🕒 预计成熟",clock(result.finishTime,true)," hot")+
+    "</div>";
+}
 
-    if(farms.length===0){
-
-
-        box.innerHTML=
-
-        "<div class='empty'>暂无农场</div>";
-
-
-        return;
-
-
+function wateringResultHtml(record){
+    if(!record.possible){
+        return "<div class='warn'><b>做不到</b><br>第一次浇水后剩 <span class='nw'>"+fmtDur(record.firstAfter)+"</span>，目标剩余时间不能比这个长</div>";
     }
+    let html="<ol class='timeline'>"+record.steps.map(function(step){
+        let title=step.title;
+        let badge="<em data-at='"+step.at+"'></em>";
+        let detail;
+        if(step.type==="plant"){
+            title="种下";
+            badge="<em>自动浇水</em>";
+            detail="剩 "+fmtDur(step.remain);
+        }
+        else if(step.type==="refill"){
+            title="补水";
+            if(step.from!==undefined){
+                badge="<em data-from='"+step.from+"' data-to='"+step.to+"'></em>";
+                detail=refillTime(step)+" 之间随时补一次，"+clock(step.to)+" 水会干";
+            }
+            else{
+                detail="按时补水，别让水干";
+            }
+        }
+        else{
+            detail="浇后剩 "+(step.final ? "<strong class='goal'>"+fmtDur(step.remain)+"</strong>" : fmtDur(step.remain));
+        }
+        let start=step.from!==undefined ? step.from : step.at;
+        return "<li data-type='"+step.type+"' data-end='"+stepEnd(step)+"'>"+
+            "<time>"+clockHtml(start)+"</time>"+
+            "<div><b>"+title+"</b>"+badge+"<p>"+detail+"</p></div>"+
+        "</li>";
+    }).join("")+"</ol>";
+    html+="<div class='note'>之后不再浇水的话，"+clock(record.ripeAt,true)+" 成熟</div>";
+    if(isNum(record.alt)){
+        html+="<div class='note'>不补水的话："+clock(record.alt)+" 浇第二次，浇后也剩 "+fmtDur(record.target)+"</div>";
+    }
+    return html;
+}
 
+function stepHtml(step,num){
+    let name="浇水";
+    let time=clock(step.at);
+    let detail="浇后剩 <strong class='goal'>"+fmtDur(step.remain)+"</strong>";
+    if(step.type==="refill"){
+        name="补水";
+        time=refillTime(step);
+        detail=step.from!==undefined ? "这段时间里随时补一次，"+clock(step.to)+" 水会干" : "按时补水，别让水干";
+    }
+    return "<div class='step'><i>"+num+"</i><div>"+
+        "<div class='step-row'><span>"+name+"</span><time>"+time+"</time></div>"+
+        "<p>"+detail+"</p>"+
+    "</div></div>";
+}
 
-
-
-
-
-    box.innerHTML="";
-
-
-
-
-
-
-
-    farms.forEach(function(farm,index){
-
-
-        farm=Object.assign({},farm,{
-
-            name:escapeHtml(farm.name),
-
-            crop:escapeHtml(farm.crop),
-
-            id:escapeHtml(farm.id)
-
-        });
-
-
-
-        box.innerHTML +=
-
-
-
-        "<div class='farmListItem'>"+
-
-
-
-
-
-
-        "<div class='farmName'>"+
-
-        "🌾 "+farm.name+
-
+function strategyResultHtml(record){
+    if(!record.possible){
+        return "<div class='warn'><b>做不到</b><br>现在浇水后只剩 <span class='nw'>"+fmtDur(record.afterNow)+"</span>，已经低于目标 <span class='nw'>"+fmtDur(record.target)+"</span></div>";
+    }
+    let more=record.afterNow-record.target;
+    let html="<div class='summary'>现在浇水后剩 <b>"+fmtDur(record.afterNow)+"</b>，"+
+        (Math.round(more)>0 ? "比目标多 <span class='nw'>"+fmtDur(more)+"</span>" : "正好是目标")+
+    "</div>";
+    let refill=record.steps.length>1;
+    html+="<div class='plan main'><div class='plan-head'>"+
+        (refill ? "方案一：先补水<span>最后浇水更早</span>" : "浇水方案<span>等的这段时间水不会干，不用补水</span>")+
         "</div>"+
-
-
-
-
-
-
-        "<div class='smallText'>"+
-
-        "作物："+farm.crop+
-
-        "</div>"+
-
-
-
-
-
-
-        "<div class='smallText'>"+
-
-        "剩余："+
-
-        "<span class='remainTime' data-finish-time='"+farm.finishTime+"'>"+
-
-        getRemainTime(farm.finishTime)+
-
-        "</span>"+
-
-        "</div>"+
-
-
-
-
-
-
-        "<div class='smallText'>"+
-
-        "🕒 预计成熟："+
-
-        getFinishClock(farm.finishTime)+
-
-        "</div>"+
-
-
-
-
-
-
-        "<button class='deleteBtn' data-id='"+farm.id+"'>"+
-
-        "删除农场"+
-
-        "</button>"+
-
-
-
-
-
+        record.steps.map(function(step,i){
+            return stepHtml(step,i+1);
+        }).join("")+
+    "</div>";
+    if(isNum(record.alt)){
+        html+="<div class='plan'><div class='plan-head'>方案二：不补水<span>只浇一次</span></div>"+
+            stepHtml({ type:"water", at:record.alt, remain:record.target },1)+
         "</div>";
-
-
-
-    });
-
-
-
-    document.querySelectorAll(".deleteBtn").forEach(function(btn){
-
-        btn.onclick=function(){
-
-            deleteFarm(this.getAttribute("data-id"));
-
-        };
-
-    });
-
-
-
-}
-
-
-
-
-
-
-
-// =====================
-// Update countdowns
-// =====================
-
-function updateCountdowns(){
-
-    document.querySelectorAll(".remainTime").forEach(function(item){
-
-        item.textContent=getRemainTime(
-            item.getAttribute("data-finish-time")
-        );
-
-    });
-
-}
-
-
-// =====================
-// 删除农场
-// =====================
-
-
-function deleteFarm(id){
-
-
-    if(confirm("确定删除这个农场吗？")){
-
-
-        farms = farms.filter(function(item){
-
-            return String(item.id) !== String(id);
-
-        });
-
-
-        saveData();
-
-        showFarmList();
-
-
     }
+    return html;
+}
 
+function badgeText(badge,now){
+    if(badge.hasAttribute("data-from")){
+        let from=Number(badge.getAttribute("data-from"));
+        let to=Number(badge.getAttribute("data-to"));
+        if(now<from-MINUTE){
+            return "还有 "+fmtDur(Math.ceil((from-now)/MINUTE))+" 开始";
+        }
+        return now<=to ? "现在可以补" : "已过";
+    }
+    return untilText(Number(badge.getAttribute("data-at")),now);
+}
+
+// 每秒刷新倒计时、"还有多久"和已过的步骤，只改文字和样式，不重建按钮
+function refreshLive(){
+    let now=Date.now();
+
+    document.querySelectorAll("[data-finish]").forEach(function(el){
+        let left=Number(el.getAttribute("data-finish"))-now;
+        el.innerHTML=left>0 ? "<small>还剩</small>"+fmtCountdown(left) : "已经成熟 🌱";
+        el.parentNode.classList.toggle("ripe",left<=0);
+    });
+
+    document.querySelectorAll(".timeline").forEach(function(list){
+        let foundNext=false;
+        list.querySelectorAll("li").forEach(function(li){
+            let past=Number(li.getAttribute("data-end"))<now-MINUTE;
+            let isNext=!past && !foundNext && li.getAttribute("data-type")!=="plant";
+            foundNext=foundNext || isNext;
+            li.classList.toggle("past",past);
+            li.classList.toggle("next",isNext);
+            let badge=li.querySelector("em[data-at],em[data-from]");
+            if(badge){
+                badge.textContent=badgeText(badge,now);
+            }
+        });
+    });
+
+    document.querySelectorAll(".item[data-kind]").forEach(function(item){
+        let list=item.getAttribute("data-kind")==="plans" ? plans : strategies;
+        let record=list.find(function(r){
+            return String(r.id)===item.getAttribute("data-id");
+        });
+        if(!record){
+            return;
+        }
+        let next=nextStep(record.steps,now);
+        item.querySelector(".next").innerHTML=nextText(next,now);
+        item.classList.toggle("finished",!next);
+        item.querySelectorAll("li[data-end]").forEach(function(li){
+            let past=Number(li.getAttribute("data-end"))<now-MINUTE;
+            li.classList.toggle("passed",past);
+            li.querySelector(".mark").textContent=past ? "✓" : li.getAttribute("data-num");
+        });
+    });
 }
 
 
 
-
-
-
-
 // =====================
-// 自动刷新倒计时
+// 输入和按钮
 // =====================
 
+// 读取"小时 + 分钟"两个输入框，返回总分钟数；空着按 0 算，填了负数返回 NaN
+function readMinutes(hourId,minId){
+    let h=Number(document.getElementById(hourId).value)||0;
+    let m=Number(document.getElementById(minId).value)||0;
+    if(h<0||m<0){
+        return NaN;
+    }
+    return h*60+m;
+}
 
+// 检查剩余时间和水分时间，有问题时返回提示文字
+function checkRemainWater(crop,remain,water,remainName,canSwitchCrop){
+    if(isNaN(remain)||isNaN(water)){
+        return "时间不能填负数";
+    }
+    if(remain<=0){
+        return "请输入"+remainName;
+    }
+    if(remain>plantRemain(crop)){
+        return crop.name+"的"+remainName+"最多 "+fmtDur(plantRemain(crop))+(canSwitchCrop ? "，请检查作物类型或输入" : "，请检查输入");
+    }
+    if(water>crop.maxWater){
+        return crop.name+"的水分最多 "+fmtDur(crop.maxWater)+(canSwitchCrop ? "，请检查作物类型或水分时间" : "，请检查水分时间");
+    }
+    return "";
+}
+
+function readName(id){
+    let name=document.getElementById(id).value.trim();
+    if(name===""){
+        alert("请输入农场名称");
+    }
+    return name;
+}
+
+
+// 计算成熟时间：输入有误时弹窗提示并返回 null
+function calcMaturityInput(){
+    let on=document.querySelector("#m-crop button.on");
+    let crop=CROPS[on ? on.getAttribute("data-crop") : "hero"];
+    let remain=readMinutes("m-remain-h","m-remain-m");
+    let water=readMinutes("m-water-h","m-water-m");
+    let error=checkRemainWater(crop,remain,water,"剩余成熟时间",true);
+    if(error){
+        alert(error);
+        return null;
+    }
+    let result=calcMaturity(crop,remain,water);
+    result.crop=crop;
+    result.now=Date.now();
+    result.finishTime=result.now+Math.round(result.fastest*MINUTE);
+    document.getElementById("m-time").textContent="按现在 "+hhmm(result.now);
+    document.getElementById("m-time").hidden=false;
+    document.getElementById("m-result").innerHTML=maturityResultHtml(result);
+    return result;
+}
+
+function saveMaturity(){
+    let name=readName("m-name");
+    if(name===""){
+        return;
+    }
+    // 保存前按当前输入重新计算，避免改了输入却存进旧结果
+    let result=calcMaturityInput();
+    if(!result){
+        return;
+    }
+    farms.push({
+        id:Date.now(),
+        name:name,
+        crop:result.crop.label,
+        finishTime:result.finishTime
+    });
+    saveList(STORE.farms,farms);
+    renderFarms();
+    alert("保存成功");
+}
+
+
+let wateringShown=false;
+
+function calcWateringInput(){
+    let value=document.getElementById("w-plant").value;
+    let plantTime=value ? new Date(value).getTime() : NaN;
+    if(isNaN(plantTime)){
+        alert("请选择种下时间");
+        return null;
+    }
+    let record=buildWatering(plantTime,settings.target);
+    document.getElementById("w-result").innerHTML=wateringResultHtml(record);
+    wateringShown=true;
+    refreshLive();
+    return record;
+}
+
+function saveWatering(){
+    let name=readName("w-name");
+    if(name===""){
+        return;
+    }
+    let record=calcWateringInput();
+    if(!record){
+        return;
+    }
+    if(!record.possible){
+        alert("按现在的目标剩余时间算不出浇水时间，没法保存");
+        return;
+    }
+    record.id=Date.now();
+    record.name=name;
+    plans.push(record);
+    saveList(STORE.plans,plans);
+    renderPlans();
+    alert("保存成功");
+}
+
+
+let strategyShown=false;
+
+function calcStrategyInput(){
+    let remain=readMinutes("s-remain-h","s-remain-m");
+    let water=readMinutes("s-water-h","s-water-m");
+    let error=checkRemainWater(CROPS.hero,remain,water,"当前剩余时间",false);
+    if(error){
+        alert(error);
+        return null;
+    }
+    let record=buildStrategy(Date.now(),remain,water,settings.target);
+    document.getElementById("s-time").textContent="按现在 "+hhmm(record.calcTime);
+    document.getElementById("s-time").hidden=false;
+    document.getElementById("s-result").innerHTML=strategyResultHtml(record);
+    strategyShown=true;
+    return record;
+}
+
+function saveStrategy(){
+    let name=readName("s-name");
+    if(name===""){
+        return;
+    }
+    let record=calcStrategyInput();
+    if(!record){
+        return;
+    }
+    if(!record.possible){
+        alert("现在已经达不到目标剩余时间，没法保存");
+        return;
+    }
+    record.id=Date.now();
+    record.name=name;
+    strategies.push(record);
+    saveList(STORE.strategies,strategies);
+    renderStrategies();
+    alert("保存成功");
+}
+
+
+function showTab(name){
+    if(!document.querySelector(".page[data-page='"+name+"']")){
+        name="maturity";
+    }
+    document.querySelectorAll(".page").forEach(function(page){
+        page.hidden=page.getAttribute("data-page")!==name;
+    });
+    document.querySelectorAll(".tabbar button").forEach(function(btn){
+        btn.classList.toggle("on",btn.getAttribute("data-tab")===name);
+    });
+    window.scrollTo(0,0);
+    // 记住上次用的功能，下次打开直接回到这里
+    if(settings.tab!==name){
+        settings.tab=name;
+        saveSettings();
+    }
+}
+
+function changeTarget(editor){
+    let h=Number(editor.querySelector(".target-h").value)||0;
+    let m=Number(editor.querySelector(".target-m").value)||0;
+    let target=Math.round(h*60+m);
+    if(h<0||m<0||target<=0){
+        alert("请输入正确的目标剩余时间");
+        return;
+    }
+    if(target>plantRemain(CROPS.hero)){
+        alert("目标剩余时间最多 "+fmtDur(plantRemain(CROPS.hero)));
+        return;
+    }
+    settings.target=target;
+    saveSettings();
+    document.querySelectorAll(".target-edit").forEach(function(el){
+        el.hidden=true;
+    });
+    renderTarget();
+
+    // 已经算出来的结果是按旧目标算的，提示重新计算
+    let tip="<div class='placeholder'>目标改成了 "+fmtDur(target)+"，点「计算」重新算</div>";
+    if(wateringShown){
+        document.getElementById("w-result").innerHTML=tip;
+        wateringShown=false;
+    }
+    if(strategyShown){
+        document.getElementById("s-result").innerHTML=tip;
+        document.getElementById("s-time").hidden=true;
+        strategyShown=false;
+    }
+}
+
+
+document.querySelectorAll(".tabbar button").forEach(function(btn){
+    btn.onclick=function(){
+        showTab(btn.getAttribute("data-tab"));
+    };
+});
+
+document.querySelectorAll("#m-crop button").forEach(function(btn){
+    btn.onclick=function(){
+        document.querySelectorAll("#m-crop button").forEach(function(b){
+            b.classList.toggle("on",b===btn);
+        });
+    };
+});
+
+document.getElementById("m-calc").onclick=calcMaturityInput;
+document.getElementById("m-save").onclick=saveMaturity;
+document.getElementById("w-calc").onclick=calcWateringInput;
+document.getElementById("w-save").onclick=saveWatering;
+document.getElementById("s-calc").onclick=calcStrategyInput;
+document.getElementById("s-save").onclick=saveStrategy;
+
+document.getElementById("w-now").onclick=function(){
+    document.getElementById("w-plant").value=toInputTime(Date.now());
+};
+
+document.querySelectorAll(".target-toggle").forEach(function(btn){
+    btn.onclick=function(){
+        let editor=btn.closest(".card").querySelector(".target-edit");
+        editor.hidden=!editor.hidden;
+        if(!editor.hidden){
+            editor.querySelector(".target-h").value=Math.floor(settings.target/60);
+            editor.querySelector(".target-m").value=settings.target%60;
+        }
+    };
+});
+
+document.querySelectorAll(".target-ok").forEach(function(btn){
+    btn.onclick=function(){
+        changeTarget(btn.closest(".target-edit"));
+    };
+});
+
+// 删除按钮用事件委托，列表刷新后也不会失效
+[
+    { id:"m-list", key:STORE.farms, ask:"确定删除这个农场吗？", get:function(){ return farms; }, set:function(v){ farms=v; }, render:renderFarms },
+    { id:"w-list", key:STORE.plans, ask:"确定删除这条浇水时间吗？", get:function(){ return plans; }, set:function(v){ plans=v; }, render:renderPlans },
+    { id:"s-list", key:STORE.strategies, ask:"确定删除这条浇水策略吗？", get:function(){ return strategies; }, set:function(v){ strategies=v; }, render:renderStrategies }
+].forEach(function(list){
+    document.getElementById(list.id).addEventListener("click",function(e){
+        let btn=e.target.closest(".del");
+        if(!btn || !confirm(list.ask)){
+            return;
+        }
+        list.set(list.get().filter(function(item){
+            return String(item.id)!==btn.getAttribute("data-id");
+        }));
+        saveList(list.key,list.get());
+        list.render();
+    });
+});
+
+// 输入时隐藏底部标签栏，免得被键盘顶上来挡住输入框
+document.addEventListener("focusin",function(e){
+    if(e.target.matches("input")){
+        document.body.classList.add("typing");
+    }
+});
+document.addEventListener("focusout",function(){
+    document.body.classList.remove("typing");
+});
+
+
+loadAll();
+document.getElementById("w-plant").value=toInputTime(Date.now());
+renderAll();
+showTab(settings.tab);
+
+// 过了零点，列表里的"今天/明天"要重新显示
+let renderedDate=new Date().toDateString();
 setInterval(function(){
-
-
-
-    updateCountdowns();
-
-
-
+    if(new Date().toDateString()!==renderedDate){
+        renderedDate=new Date().toDateString();
+        renderAll();
+    }
+    refreshLive();
 },1000);
-// List structure is rendered only when data changes
-
-
-
-
-
-
-// 页面打开立即刷新
-
-showFarmList();
 
 </script>
-
-
 </body>
-
-
 </html>
