@@ -1,0 +1,18 @@
+# Gradle / Android Studio 生成的文件
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# 签名密钥绝对不能提交
+*.jks
+*.keystore
+*.p12
+
+# 系统文件
+.DS_Store
+Thumbs.db

@@ -22,17 +22,40 @@ jobs:
 
 
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v3
+      uses: gradle/actions/setup-gradle@v6
       with:
-        gradle-version: 8.7
+        gradle-version: "8.7"
+        # 用开源的基础缓存，不用默认的商业缓存组件
+        cache-provider: basic
+
+
+    # 把 Secrets 里的签名密钥还原成文件，并先检查密码对不对
+    - name: Prepare signing key
+      env:
+        SIGNING_KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+        SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+      run: |
+        if [ -z "$SIGNING_KEYSTORE_BASE64" ] || [ -z "$SIGNING_KEYSTORE_PASSWORD" ]; then
+          echo "::error::缺少签名 Secrets：请在仓库 Settings → Secrets and variables → Actions 中添加 SIGNING_KEYSTORE_BASE64 和 SIGNING_KEYSTORE_PASSWORD"
+          exit 1
+        fi
+        echo "$SIGNING_KEYSTORE_BASE64" | base64 --decode --ignore-garbage > "$RUNNER_TEMP/release.keystore"
+        if ! keytool -list -keystore "$RUNNER_TEMP/release.keystore" -storepass "$SIGNING_KEYSTORE_PASSWORD" > /dev/null; then
+          echo "::error::签名密钥打不开：请检查两个 Secrets 的内容是否完整复制"
+          exit 1
+        fi
+        echo "SIGNING_KEYSTORE_FILE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
 
 
     - name: Build APK
-      run: gradle assembleDebug
+      env:
+        SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+      run: gradle assembleRelease
 
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        name: app-release
+        path: app/build/outputs/apk/release/app-release.apk
+        if-no-files-found: error

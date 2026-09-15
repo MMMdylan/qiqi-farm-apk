@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
 }
 
+// 发布签名：GitHub Actions 把 Secrets 里的密钥解码成临时文件，通过环境变量传进来。
+// 固定用同一把密钥签名，新版 APK 才能直接覆盖安装，不用卸载（卸载会清空农场列表）。
+def signingKeystoreFile = System.getenv("SIGNING_KEYSTORE_FILE")
+
 android {
     namespace 'com.qiqi.farm'
     compileSdk 35
@@ -12,6 +16,25 @@ android {
         targetSdk 35
         versionCode 1
         versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            if (signingKeystoreFile) {
+                storeFile file(signingKeystoreFile)
+                storePassword System.getenv("SIGNING_KEYSTORE_PASSWORD")
+                keyAlias "qiqifarm"
+                keyPassword System.getenv("SIGNING_KEYSTORE_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (signingKeystoreFile) {
+                signingConfig signingConfigs.release
+            }
+        }
     }
 }
 
