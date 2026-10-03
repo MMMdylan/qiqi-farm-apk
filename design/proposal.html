@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>暖阳小院改版方案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+    --paper:#FFF8EF;--paper-2:#FCEEDC;--card:#FFFDFA;--line:#F1E3CF;--line-2:#E6D2B8;
+    --cocoa:#553F2F;--cocoa-2:#8A7260;--cocoa-3:#B5A08C;
+    --apricot:#F28C55;--apricot-d:#D46A33;--apricot-l:#FFE8D8;
+    --honey:#F5BF4F;--honey-l:#FFF2CE;--honey-ink:#80602C;
+    --blush:#F09A93;--blush-l:#FDE5E1;--blush-ink:#C0625A;
+    --peach-l:#FFEBD6;
+    --sage:#7DB065;--sage-d:#4F8A3B;--sage-l:#E4F1D8;
+    --water:#4DA3D1;--water-d:#2C81B0;--water-l:#DFF0F9;
+    --berry:#D65A62;--berry-l:#FCE2E1;
+    --wood:#C89062;--wood-d:#9A6A42;
+    --font:"Nunito","PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#F3EADF;color:var(--cocoa);font-family:var(--font);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+
+/* ===== 方案说明 ===== */
+.doc{max-width:1700px;margin:0 auto;padding:44px 16px 80px}
+.doc-head{max-width:900px;margin:0 auto 48px;text-align:center}
+.eyebrow{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--apricot-d)}
+.doc-head h1{margin:8px 0 12px;font-size:36px;font-weight:900;letter-spacing:2px}
+.lead{max-width:640px;margin:0 auto;font-size:16px;line-height:1.85;color:var(--cocoa-2)}
+.swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:24px}
+.sw{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:999px;background:#FFFCF7;font-size:13px;font-weight:800;box-shadow:0 1px 0 var(--line-2)}
+.sw i{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.sw small{font-family:Consolas,ui-monospace,monospace;font-size:11.5px;font-weight:400;color:var(--cocoa-3)}
+.points{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:28px;text-align:left}
+.point{padding:14px 16px;border:1px solid var(--line);border-radius:18px;background:#FFFBF5}
+.point b{display:block;margin-bottom:4px;font-size:15px}
+.point span{font-size:13px;line-height:1.7;color:var(--cocoa-2)}
+.point em{margin-right:6px;font-style:normal;color:var(--apricot-d)}
+
+.shots{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:56px 40px}
+.shot{width:375px;margin:0}
+.shot figcaption{margin-top:22px;padding:0 6px}
+.shot h3{margin:0 0 6px;font-size:17px;font-weight:900}
+.shot h3 span{margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--apricot);font-size:11px;color:#fff;vertical-align:2px}
+.shot ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.8;color:var(--cocoa-2)}
+
+.section-title{margin:80px 0 8px;text-align:center;font-size:22px;font-weight:900}
+.section-sub{margin:0 0 30px;text-align:center;font-size:14px;color:var(--cocoa-2)}
+.tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:28px}
+.tile-wrap{width:300px}
+.tile-wrap p{margin:12px 6px 0;font-size:13px;line-height:1.7;color:var(--cocoa-2)}
+.tile-wrap p b{color:var(--cocoa)}
+.tile{position:relative;overflow:hidden;height:260px;border-radius:28px;background:var(--paper);box-shadow:0 0 0 1px var(--line-2),0 20px 40px -24px rgba(110,70,30,.45)}
+
+.keep{max-width:900px;margin:72px auto 0;padding:20px 24px;border:1.5px dashed var(--line-2);border-radius:22px;background:#FFFBF5}
+.keep h4{margin:0 0 8px;font-size:16px;font-weight:900}
+.keep ul{margin:0;padding-left:20px;font-size:14px;line-height:1.9;color:var(--cocoa-2)}
+.keep b{color:var(--cocoa)}
+
+/* ===== 手机框 ===== */
+.phone{position:relative;overflow:hidden;border-radius:40px;background:radial-gradient(130% 50% at 100% 0%,#FFE4C8 0%,rgba(255,228,200,0) 60%),var(--paper);box-shadow:0 0 0 9px #FFFDF9,0 0 0 10px #E3CFB6,0 34px 60px -24px rgba(110,70,30,.45)}
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:13px 26px 4px;font-size:13px;font-weight:900}
+.statusbar svg{width:22px;height:12px}
+.screen{position:relative;padding-bottom:100px;font-size:15px}
+
+/* 底部标签栏 */
+.tabbar{position:absolute;right:14px;bottom:14px;left:14px;display:flex;padding:6px;border-radius:24px;background:rgba(255,253,249,.97);box-shadow:0 0 0 1px var(--line),0 12px 24px -10px rgba(120,80,40,.35)}
+.tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0 5px;border-radius:18px;font-size:12px;font-weight:800;color:var(--cocoa-3);text-decoration:none}
+.tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabbar a.on{background:var(--apricot-l);color:var(--apricot-d)}
+.tabbar a.on svg{fill:rgba(242,140,85,.22)}
+
+/* ===== 小院首页 ===== */
+.home-head{display:flex;align-items:center;gap:12px;padding:12px 20px 18px}
+.hh-text{flex:1;min-width:0}
+.hello{font-size:14px;font-weight:800;color:var(--cocoa-2)}
+.sign{position:relative;display:inline-block;margin:8px 0 9px;padding:7px 22px 8px;border-radius:12px;background:repeating-linear-gradient(177deg,rgba(255,255,255,.08) 0 3px,rgba(90,50,20,.04) 3px 7px),linear-gradient(#DBA878,#C38B5B);font-size:22px;font-weight:900;letter-spacing:3px;color:#FFF7EA;text-shadow:0 1px 0 rgba(110,60,20,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(120,70,30,.16),0 3px 0 var(--wood-d)}
+.sign::before,.sign::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#8C5E38;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.sign::before{left:8px}
+.sign::after{right:8px}
+.today{font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.today b{color:var(--sage-d)}
+.avatar{flex:none;width:66px;height:66px;border-radius:22px;object-fit:cover;box-shadow:0 0 0 3px #fff,0 8px 16px -6px rgba(120,80,40,.5);transform:rotate(4deg)}
+
+.hero{position:relative;overflow:hidden;margin:0 16px 18px;padding:16px 18px 16px;border-radius:26px;background:linear-gradient(145deg,#FFE3C8,#FFC49E);box-shadow:0 14px 26px -14px rgba(214,106,51,.65)}
+.hero-eyebrow{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:var(--apricot-d)}
+.live{width:8px;height:8px;border-radius:50%;background:var(--apricot-d);box-shadow:0 0 0 4px rgba(214,106,51,.18)}
+.hero-title{margin-top:9px;font-size:17px;font-weight:700}
+.hero-title b{font-weight:900}
+.hero-time{margin-top:1px;font-size:34px;font-weight:900;line-height:1.15;letter-spacing:.5px}
+.hero-time span{margin:0 2px;font-size:22px;color:#A27458}
+.hero-sub{margin-top:2px;font-size:13px;color:#7A5A44}
+.hero-foot{display:flex;align-items:center;gap:10px;margin-top:13px}
+.hero-pill{padding:5px 12px;border-radius:999px;background:#FFFCF8;font-size:13px;font-weight:800;color:var(--apricot-d)}
+.hero-pill b{font-size:17px;font-weight:900}
+.hero-then{font-size:12.5px;font-weight:700;color:#8A6A52}
+.hero-art{position:absolute;top:8px;right:2px;width:96px;height:96px;transform:rotate(-8deg)}
+
+.chips{display:flex;gap:8px;padding:0 16px 12px}
+.chip{flex:none;height:32px;padding:0 13px;border:1px solid var(--line-2);border-radius:999px;background:var(--card);font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.chip i{margin-left:3px;font-style:normal;color:var(--cocoa-3)}
+.chip.on{border-color:var(--cocoa);background:var(--cocoa);color:#FFF6EA}
+.chip.on i{color:#E2C6AC}
+
+.rec{display:flex;gap:12px;margin:0 16px 12px;padding:14px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 10px 20px -14px rgba(140,90,40,.4)}
+.badge-ic{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:16px;font-size:24px}
+.b-blush{background:var(--blush-l)}
+.b-peach{background:var(--peach-l)}
+.b-water{background:var(--water-l)}
+.b-sage{background:var(--sage-l)}
+.rec-body{flex:1;min-width:0}
+.rec-top{display:flex;align-items:center;gap:6px}
+.rec-name{min-width:0;overflow:hidden;font-size:16px;font-weight:900;white-space:nowrap;text-overflow:ellipsis}
+.kind{flex:none;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
+.k-apricot{background:var(--apricot-l);color:var(--apricot-d)}
+.k-water{background:var(--water-l);color:var(--water-d)}
+.k-sage{background:var(--sage-l);color:var(--sage-d)}
+.more{flex:none;width:28px;height:24px;margin-left:auto;padding:0;border:0;border-radius:9px;background:none;font-size:18px;font-weight:900;line-height:1;color:var(--cocoa-3)}
+.rec-main{margin-top:3px;font-size:13.5px;font-weight:700;color:var(--cocoa-2)}
+.rec-sub{margin-top:2px;font-size:12.5px;font-weight:700;color:var(--cocoa-3)}
+.dur{font-weight:800;color:var(--cocoa)}
+.dur b{margin:0 1px;font-size:1.45em;font-weight:900;letter-spacing:.3px}
+.rec .dur{color:var(--apricot-d)}
+.clock{font-size:20px;font-weight:900;color:var(--water-d)}
+.clock small{margin-right:3px;font-size:13px}
+.bar{position:relative;height:8px;margin:10px 12px 4px 0;border-radius:99px;background:var(--paper-2)}
+.bar i{position:absolute;top:0;bottom:0;left:0;border-radius:99px;background:linear-gradient(90deg,#BCDD98,var(--sage))}
+.bar i::after{content:"🌱";position:absolute;top:50%;right:-10px;font-size:16px;transform:translateY(-58%)}
+.rec.ripe{border-color:#D3E7BF;background:linear-gradient(135deg,#F1F9E7,#FFFDFA 70%)}
+.rec.ripe .rec-main{font-size:15px;font-weight:900;color:var(--sage-d)}
+.rec.ripe .bar i::after{content:"🌾"}
+
+.mini-steps{display:flex;margin:10px 0 0;padding:0;list-style:none}
+.mini-steps li{position:relative;flex:1;padding-top:15px;font-size:11px;font-weight:700;text-align:center;color:var(--cocoa-3)}
+.mini-steps li::before{content:"";position:absolute;z-index:1;top:0;left:50%;width:11px;height:11px;margin-left:-5.5px;border:2px solid var(--line-2);border-radius:50%;background:var(--paper)}
+.mini-steps li::after{content:"";position:absolute;top:4.5px;left:-50%;width:100%;height:2px;background:var(--line-2)}
+.mini-steps li:first-child::after{display:none}
+.mini-steps li.done{color:var(--cocoa-2)}
+.mini-steps li.done::before{border-color:var(--sage);background:var(--sage)}
+.mini-steps li.done::after,.mini-steps li.next::after{background:var(--sage)}
+.mini-steps li.next{font-weight:900;color:var(--water-d)}
+.mini-steps li.next::before{border-color:var(--water);background:#fff;box-shadow:0 0 0 3px var(--water-l)}
+
+/* ===== 计算页 ===== */
+.s-head{padding:12px 20px 16px}
+.s-title{display:flex;align-items:center;gap:8px;font-size:23px;font-weight:900;letter-spacing:1px}
+.s-desc{margin-top:3px;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.tag-mini{padding:2px 9px;border-radius:999px;background:var(--blush-l);font-size:12px;font-weight:800;letter-spacing:0;color:var(--blush-ink)}
+
+.card{margin:0 16px 14px;padding:16px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:0 12px 24px -16px rgba(140,90,40,.45)}
+.lbl{margin:0 0 7px;font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.f{margin-bottom:14px}
+.inp{display:flex;align-items:center;gap:8px;height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:16px;background:var(--paper);font-size:16px;font-weight:800}
+.inp input{flex:1;min-width:0;padding:0;border:0;outline:0;background:none;font-weight:800}
+.inp .ico{font-size:16px}
+.inp.focus{border-color:var(--apricot);background:#fff;box-shadow:0 0 0 4px var(--apricot-l)}
+.recent{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;font-weight:700;color:var(--cocoa-3)}
+.recent button{height:26px;padding:0 10px;border:1px dashed var(--line-2);border-radius:999px;background:none;font-size:12px;font-weight:800;color:var(--cocoa-2)}
+
+.crop-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crop{position:relative;display:flex;align-items:center;gap:9px;padding:10px;border:1.5px solid var(--line);border-radius:18px;background:var(--paper);text-align:left}
+.crop .em{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:#fff;font-size:21px}
+.crop b{display:block;font-size:15px;font-weight:900}
+.crop small{display:block;font-size:11.5px;font-weight:700;color:var(--cocoa-3)}
+.crop.on{border-color:var(--apricot);background:var(--apricot-l);box-shadow:0 3px 0 #F5C19D}
+.crop.on .em{background:var(--blush-l)}
+.crop .check{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--apricot);font-size:12px;font-style:normal;font-weight:900;color:#fff;box-shadow:0 0 0 2px var(--card)}
+
+.trows{margin-top:14px}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1px dashed var(--line-2)}
+.trow:last-child{padding-bottom:0}
+.tlabel{display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:900}
+.tlabel .ti{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:11px;font-size:16px}
+.tlabel small{display:block;white-space:nowrap;font-size:11px;font-weight:700;color:var(--cocoa-3)}
+.tcap{display:flex;align-items:center;gap:1px;height:50px;padding:0 10px;border:1.5px solid var(--line);border-radius:16px;background:var(--paper);font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.tcap input{width:40px;padding:0;border:0;outline:0;background:none;font-size:26px;font-weight:900;text-align:center;color:var(--cocoa)}
+
+.goal-chip{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 10px 9px 12px;border:1.5px dashed #EBCB7C;border-radius:16px;background:var(--honey-l);font-size:13.5px;font-weight:800;color:var(--honey-ink)}
+.goal-chip .dur{margin-left:auto;color:var(--apricot-d)}
+.goal-chip .dur b{font-size:1.3em}
+.goal-chip button{height:28px;padding:0 10px;border:0;border-radius:10px;background:#fff;font-size:12.5px;font-weight:900;color:var(--apricot-d)}
+
+.inp-row{display:flex;gap:8px}
+.inp-row .inp{flex:1}
+.btn-side{flex:none;height:48px;padding:0 16px;border:1.5px solid var(--line-2);border-radius:16px;background:var(--card);font-size:14px;font-weight:900;color:var(--apricot-d);box-shadow:0 3px 0 var(--line-2)}
+
+.btn svg{width:20px;height:20px;fill:rgba(242,140,85,.22);stroke:var(--apricot-d);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border:0;border-radius:18px;font-size:17px;font-weight:900;letter-spacing:2px}
+.btn.primary{margin-top:16px;background:linear-gradient(#F89E6B,var(--apricot));color:#fff;text-shadow:0 1px 0 rgba(170,70,20,.3);box-shadow:0 4px 0 var(--apricot-d),0 12px 20px -10px rgba(214,106,51,.7)}
+.btn.ghost{border:1.5px solid var(--line-2);background:var(--card);color:var(--cocoa);box-shadow:0 3px 0 var(--line-2)}
+.save{margin:0 16px 14px}
+
+/* 成熟结果小票 */
+.ticket{position:relative;overflow:hidden;margin:0 16px 14px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:0 12px 24px -16px rgba(140,90,40,.45)}
+.ticket-top{padding:16px 18px 16px}
+.t-meta{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;color:var(--cocoa-3)}
+.t-tag{padding:2px 9px;border-radius:999px;background:var(--blush-l);font-weight:800;color:var(--blush-ink)}
+.t-label{margin-top:12px;font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.t-big{display:flex;align-items:baseline;gap:6px;margin-top:2px;color:var(--apricot-d)}
+.t-big small{font-size:17px;font-weight:900}
+.t-big b{font-size:46px;font-weight:900;line-height:1.05;letter-spacing:.5px}
+.t-count{margin-top:6px;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.t-count .dur{color:var(--cocoa)}
+.cut{position:relative;margin:0 16px;border-top:2px dashed var(--line-2)}
+.cut::before,.cut::after{content:"";position:absolute;top:-12px;width:22px;height:22px;border:1px solid var(--line);border-radius:50%;background:var(--paper)}
+.cut::before{left:-28px}
+.cut::after{right:-28px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);padding:14px 8px 16px}
+.stat{text-align:center}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat>span:first-child{display:block;font-size:11.5px;font-weight:800;color:var(--cocoa-3)}
+.stat .dur{display:block;margin-top:4px;font-size:11.5px}
+.stat .dur b{font-size:19px}
+
+/* 浇水时间线：田间小路 */
+.card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;font-size:17px;font-weight:900}
+.card-h span{font-size:12px;font-weight:800;color:var(--cocoa-3)}
+.path{margin:0;padding:0;list-style:none}
+.path li{position:relative;display:flex;gap:12px;padding-bottom:18px}
+.path li:last-child{padding-bottom:0}
+.path li:not(:last-child)::after{content:"";position:absolute;top:44px;bottom:3px;left:19px;border-left:2px dashed var(--line-2)}
+.node{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:14px;background:var(--paper);font-size:20px}
+.node svg{width:28px;height:28px}
+.pc{flex:1;min-width:0;padding-top:2px}
+.p-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.p-row b{font-size:15px;font-weight:900}
+.p-row time{font-size:19px;font-weight:900;white-space:nowrap}
+.p-row time small{margin-right:3px;font-size:12px;font-weight:800;color:var(--cocoa-3)}
+.pc p{margin:2px 0 0;font-size:12.5px;font-weight:700;color:var(--cocoa-2)}
+.path li.done .node{background:var(--sage-l);font-size:17px;font-weight:900;color:var(--sage-d)}
+.path li.done b,.path li.done time,.path li.done p{color:var(--cocoa-3)}
+.path li.next .node{background:var(--water-l);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--water)}
+.path li.next time{color:var(--water-d)}
+.path li.ripe .node{background:var(--honey-l)}
+.badge{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:900;vertical-align:2px}
+.badge.blue{background:var(--water-l);color:var(--water-d)}
+.badge.orange{background:var(--apricot-l);color:var(--apricot-d)}
+.goal{font-weight:900;color:var(--apricot-d)}
+
+/* 浇水策略 */
+.compare{margin:0 16px 14px;padding:15px 16px;border-radius:22px;background:var(--honey-l)}
+.compare-t{font-size:13.5px;font-weight:800;color:var(--honey-ink)}
+.compare-t .dur{color:var(--cocoa)}
+.cbar{display:flex;height:30px;margin:10px 0 8px;overflow:hidden;border-radius:12px;background:#fff;font-size:11.5px;font-weight:900;line-height:30px;white-space:nowrap}
+.cbar .a{padding-left:10px;background:var(--sage);color:#fff}
+.cbar .b{padding-left:8px;background:repeating-linear-gradient(-45deg,#F7CF73 0 6px,#F3C35C 6px 12px);color:var(--honey-ink)}
+.compare-f{font-size:12.5px;font-weight:700;color:var(--honey-ink)}
+.plan{margin:0 16px 12px;padding:14px 16px 16px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+.plan.main{border:2px solid var(--apricot);box-shadow:0 12px 24px -16px rgba(214,106,51,.8)}
+.plan-h{display:flex;align-items:center;gap:8px}
+.plan-h b{font-size:16px;font-weight:900}
+.plan-h span{font-size:12px;font-weight:700;color:var(--cocoa-3)}
+.plan-h .rib{margin-left:auto;padding:2px 10px;border-radius:999px;background:var(--apricot);font-size:11.5px;font-weight:900;color:#fff}
+.plan .path{margin-top:14px}
+.plan.alt .node{filter:saturate(.35);opacity:.8}
+
+/* ===== 细节 ===== */
+.fake{margin:16px 16px 0;height:62px;border-radius:20px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.fake+.fake{margin-top:10px}
+.toast{position:absolute;bottom:28px;left:50%;display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;background:var(--cocoa);font-size:14px;font-weight:800;color:#FFF6EA;white-space:nowrap;box-shadow:0 12px 24px -10px rgba(60,40,20,.6);transform:translateX(-50%)}
+.toast a{margin-left:4px;color:#FFC49E;text-decoration:none}
+.dim{position:absolute;inset:0;background:rgba(85,63,47,.38)}
+.sheet{position:absolute;right:0;bottom:0;left:0;padding:10px 18px 18px;border-radius:26px 26px 0 0;background:var(--card);text-align:center}
+.grab{width:40px;height:5px;margin:0 auto 14px;border-radius:9px;background:var(--line-2)}
+.sheet h5{margin:0;font-size:17px;font-weight:900}
+.sheet p{margin:4px 0 16px;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.sheet-btns{display:flex;gap:10px}
+.sheet-btns .btn{height:48px;font-size:16px}
+.btn.danger{background:var(--berry);color:#fff;box-shadow:0 4px 0 #B6434B}
+.err-box{display:flex;flex-direction:column;justify-content:center;height:100%;padding:0 14px}
+.err-box .tcap{border-color:var(--berry);background:#FFF6F5;box-shadow:0 0 0 4px var(--berry-l)}
+.err-msg{display:flex;align-items:center;gap:6px;margin-top:10px;padding:8px 12px;border-radius:12px;background:var(--berry-l);font-size:12.5px;font-weight:800;color:#B6434B}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:0 30px;text-align:center}
+.empty svg{width:120px;height:100px}
+.empty b{margin-top:6px;font-size:16px;font-weight:900}
+.empty span{margin:4px 0 14px;font-size:12.5px;font-weight:700;line-height:1.6;color:var(--cocoa-2)}
+.empty .btn{width:auto;height:42px;margin:0;padding:0 20px;font-size:14px;letter-spacing:1px}
+
+@media (max-width:420px){
+    .shot,.tile-wrap{width:100%}
+    .phone{border-radius:28px;box-shadow:0 0 0 1px #E3CFB6,0 24px 40px -24px rgba(110,70,30,.45)}
+    .doc-head h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+
+<!-- 复用的图标 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+        <symbol id="can" viewBox="0 0 96 96">
+            <path d="M31 38c0-15 25-15 25 0" fill="none" stroke="#D69A2E" stroke-width="6" stroke-linecap="round"/>
+            <path d="M58 54 80 31" stroke="#F2B845" stroke-width="10" stroke-linecap="round"/>
+            <ellipse cx="82" cy="29" rx="8" ry="5.5" transform="rotate(-45 82 29)" fill="#E2A137"/>
+            <rect x="18" y="37" width="46" height="41" rx="13" fill="#F5C455" stroke="#D69A2E" stroke-width="3"/>
+            <path d="M27 50c3-5 9-6 13-5" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="4" stroke-linecap="round"/>
+            <path d="M41 70c-8-5.5-8-11.5-4-12.6 2-.5 3.4.6 4 2 .6-1.4 2-2.5 4-2 4 1.1 4 7.1-4 12.6z" fill="#F09A93"/>
+            <g fill="#4DA3D1">
+                <path d="M88 41c2.2 3.2 3.3 4.8 3.3 6.3a3.3 3.3 0 0 1-6.6 0c0-1.5 1.1-3.1 3.3-6.3z"/>
+                <path d="M79 49c2.2 3.2 3.3 4.8 3.3 6.3a3.3 3.3 0 0 1-6.6 0c0-1.5 1.1-3.1 3.3-6.3z"/>
+                <path d="M89.5 56c1.7 2.5 2.6 3.7 2.6 4.9a2.6 2.6 0 0 1-5.2 0c0-1.2.9-2.4 2.6-4.9z"/>
+            </g>
+        </symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v10a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1V9"/></symbol>
+        <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20v-7"/><path d="M12 13C12 9 9.5 6.5 5 6.5 5 10.5 7.5 13 12 13z"/><path d="M12 11c0-3.5 2.3-6 6.5-6 0 3.8-2.4 6-6.5 6z"/><path d="M7.5 20h9"/></symbol>
+        <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5c3.2 4 6.5 7.5 6.5 11a6.5 6.5 0 0 1-13 0c0-3.5 3.3-7 6.5-11z"/></symbol>
+        <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol>
+        <symbol id="battery" viewBox="0 0 22 12"><rect x=".75" y=".75" width="18" height="10.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="2.5" width="12" height="7" rx="1.5" fill="currentColor"/><rect x="20" y="4" width="1.6" height="4" rx=".8" fill="currentColor"/></symbol>
+    </defs>
+</svg>
+
+<div class="doc">
+
+    <header class="doc-head">
+        <div class="eyebrow">琪琪宝贝专属农场助手 · 界面改版方案</div>
+        <h1>暖阳小院</h1>
+        <p class="lead">奶油色的纸底、杏橘色的按钮、一块小木牌和圆滚滚的数字，像在自家小院里记农事。计算规则和已经存下的数据都不动，只换长相和排布。</p>
+        <div class="swatches">
+            <span class="sw"><i style="background:#FFF8EF"></i>奶油纸<small>#FFF8EF</small></span>
+            <span class="sw"><i style="background:#F28C55"></i>杏橘<small>#F28C55</small></span>
+            <span class="sw"><i style="background:#F5BF4F"></i>蜂蜜<small>#F5BF4F</small></span>
+            <span class="sw"><i style="background:#F09A93"></i>樱粉<small>#F09A93</small></span>
+            <span class="sw"><i style="background:#7DB065"></i>嫩芽<small>#7DB065</small></span>
+            <span class="sw"><i style="background:#4DA3D1"></i>清水<small>#4DA3D1</small></span>
+            <span class="sw"><i style="background:#C89062"></i>木牌<small>#C89062</small></span>
+            <span class="sw"><i style="background:#553F2F"></i>可可<small>#553F2F</small></span>
+        </div>
+        <div class="points">
+            <div class="point"><b><em>1</em>新增「小院」首页</b><span>农场、浇水计划、策略合在一起，按“下一件事”排好。最急的那件放成大卡片，打开就知道现在该干嘛。</span></div>
+            <div class="point"><b><em>2</em>计算页只管计算</b><span>不再挂长长的列表。填好 → 算一算 → 结果紧跟在下面 → 存进小院。</span></div>
+            <div class="point"><b><em>3</em>时间用「胶囊」输入</b><span>一行一个时间，时、分并排；数字大、单位小，看得清也好点。</span></div>
+            <div class="point"><b><em>4</em>不用系统弹窗</b><span>保存用轻提示，删除用底部确认框，输错了直接在输入框下面说。</span></div>
+        </div>
+    </header>
+
+    <section class="shots">
+
+        <!-- ① 小院 -->
+        <figure class="shot">
+            <div class="phone">
+                <div class="statusbar"><span>20:41</span><svg><use href="#battery"/></svg></div>
+                <div class="screen">
+                    <header class="home-head">
+                        <div class="hh-text">
+                            <div class="hello">晚上好，琪琪宝贝 🌙</div>
+                            <div class="sign">琪琪的小院</div>
+                            <div class="today">10月3日 周六 · <b>1 块田可以收啦</b></div>
+                        </div>
+                        <img class="avatar" src="../icon.png" alt="">
+                    </header>
+
+                    <section class="hero">
+                        <div class="hero-eyebrow"><span class="live"></span>现在就要做</div>
+                        <div class="hero-title">给 <b>Aura.情</b> 补水</div>
+                        <div class="hero-time">20:41<span>~</span>21:41</div>
+                        <div class="hero-sub">这段时间里随时补一次，21:41 水会干</div>
+                        <div class="hero-foot">
+                            <span class="hero-pill">还剩 <b>59</b> 分</span>
+                            <span class="hero-then">接着 明天 03:09 浇水</span>
+                        </div>
+                        <svg class="hero-art"><use href="#can"/></svg>
+                    </section>
+
+                    <div class="chips">
+                        <button class="chip on">全部<i>5</i></button>
+                        <button class="chip">成熟<i>3</i></button>
+                        <button class="chip">浇水<i>1</i></button>
+                        <button class="chip">策略<i>1</i></button>
+                    </div>
+
+                    <article class="rec ripe">
+                        <div class="badge-ic b-sage">🌸</div>
+                        <div class="rec-body">
+                            <div class="rec-top"><b class="rec-name">向日葵田</b><span class="kind k-sage">成熟</span><button class="more">⋯</button></div>
+                            <div class="rec-main">已经成熟啦，快去收获 🎉</div>
+                            <div class="bar"><i style="width:100%"></i></div>
+                            <div class="rec-sub">今天 18:05 成熟 · 英雄作物</div>
+                        </div>
+                    </article>
+
+                    <article class="rec">
+                        <div class="badge-ic b-peach">🍑</div>
+                        <div class="rec-body">
+                            <div class="rec-top"><b class="rec-name">小桃园</b><span class="kind k-apricot">成熟</span><button class="more">⋯</button></div>
+                            <div class="rec-main"><span class="dur"><b>3</b>小时<b>17</b>分<b>22</b>秒</span> 后成熟</div>
+                            <div class="bar"><i style="width:79%"></i></div>
+                            <div class="rec-sub">今天 23:58 成熟 · 经济作物</div>
+                        </div>
+                    </article>
+
+                    <article class="rec">
+                        <div class="badge-ic b-water">💧</div>
+                        <div class="rec-body">
+                            <div class="rec-top"><b class="rec-name">琪琪的农场</b><span class="kind k-water">浇水</span><button class="more">⋯</button></div>
+                            <div class="rec-main"><span class="clock"><small>明天</small>04:46</span> 第二次浇水</div>
+                            <div class="rec-sub">还有 8小时05分</div>
+                            <ol class="mini-steps">
+                                <li class="done">种下</li>
+                                <li class="done">第一次</li>
+                                <li class="next">第二次</li>
+                                <li>成熟</li>
+                            </ol>
+                        </div>
+                    </article>
+
+                    <article class="rec">
+                        <div class="badge-ic b-blush">🌸</div>
+                        <div class="rec-body">
+                            <div class="rec-top"><b class="rec-name">花花田</b><span class="kind k-apricot">成熟</span><button class="more">⋯</button></div>
+                            <div class="rec-main"><span class="dur"><b>14</b>小时<b>39</b>分<b>52</b>秒</span> 后成熟</div>
+                            <div class="bar"><i style="width:54%"></i></div>
+                            <div class="rec-sub">明天 11:21 成熟 · 英雄作物</div>
+                        </div>
+                    </article>
+
+                    <nav class="tabbar">
+                        <a class="on"><svg><use href="#i-home"/></svg>小院</a>
+                        <a><svg><use href="#i-sprout"/></svg>成熟</a>
+                        <a><svg><use href="#i-drop"/></svg>浇水</a>
+                        <a><svg><use href="#i-compass"/></svg>策略</a>
+                    </nav>
+                </div>
+            </div>
+            <figcaption>
+                <h3>① 小院<span>新</span></h3>
+                <ul>
+                    <li>顶部木牌招牌 + 琪琪头像（就用现在的应用图标），按时间打招呼</li>
+                    <li>「现在就要做」大卡片：最近的一件事、时间和倒计时</li>
+                    <li>下面是所有记录，按下一步的时间排；成熟类带一根小苗进度条</li>
+                    <li>「删除」收进右上角的 ⋯，不再满屏红按钮</li>
+                </ul>
+            </figcaption>
+        </figure>
+
+        <!-- ② 成熟时间 -->
+        <figure class="shot">
+            <div class="phone">
+                <div class="statusbar"><span>20:41</span><svg><use href="#battery"/></svg></div>
+                <div class="screen">
+                    <header class="s-head">
+                        <div class="s-title">算算成熟时间</div>
+                        <div class="s-desc">告诉我田里现在的样子，帮你算最快几点能收</div>
+                    </header>
+
+                    <div class="card">
+                        <div class="f">
+                            <div class="lbl">农场名称</div>
+                            <div class="inp"><span class="ico">🏷️</span><input value="花花田"></div>
+                            <div class="recent">最近<button>Aura.情</button><button>小桃园</button><button>向日葵田</button></div>
+                        </div>
+                        <div class="lbl">作物类型</div>
+                        <div class="crop-pick">
+                            <button class="crop on"><span class="em">🌸</span><span><b>英雄作物</b><small>32 小时成熟</small></span><i class="check">✓</i></button>
+                            <button class="crop"><span class="em">🍑</span><span><b>经济作物</b><small>16 小时成熟</small></span></button>
+                        </div>
+                        <div class="trows">
+                            <div class="trow">
+                                <div class="tlabel"><span class="ti b-peach">⏳</span><span>剩余成熟<small>最多 29小时20分</small></span></div>
+                                <div class="tcap"><input value="20">时<input value="00">分</div>
+                            </div>
+                            <div class="trow">
+                                <div class="tlabel"><span class="ti b-water">💧</span><span>剩余水分<small>最多 10小时40分</small></span></div>
+                                <div class="tcap"><input value="04">时<input value="00">分</div>
+                            </div>
+                        </div>
+                        <button class="btn primary">✨ 算一算</button>
+                    </div>
+
+                    <div class="ticket">
+                        <div class="ticket-top">
+                            <div class="t-meta"><span class="t-tag">🌸 英雄作物</span><span>按 20:41 算的</span></div>
+                            <div class="t-label">一直把水补满的话，最快</div>
+                            <div class="t-big"><small>明天</small><b>11:21</b><small>成熟</small></div>
+                            <div class="t-count">还要 <span class="dur"><b>14</b>小时<b>40</b>分</span></div>
+                        </div>
+                        <div class="cut"></div>
+                        <div class="stats">
+                            <div class="stat"><span>💧 浇水缩短</span><span class="dur"><b>1</b>小时<b>40</b>分</span></div>
+                            <div class="stat"><span>🌱 浇水后剩</span><span class="dur"><b>18</b>小时<b>20</b>分</span></div>
+                            <div class="stat"><span>⚡ 最快成熟</span><span class="dur"><b>14</b>小时<b>40</b>分</span></div>
+                        </div>
+                    </div>
+                    <div class="save"><button class="btn ghost"><svg><use href="#i-home"/></svg>存进小院</button></div>
+
+                    <nav class="tabbar">
+                        <a><svg><use href="#i-home"/></svg>小院</a>
+                        <a class="on"><svg><use href="#i-sprout"/></svg>成熟</a>
+                        <a><svg><use href="#i-drop"/></svg>浇水</a>
+                        <a><svg><use href="#i-compass"/></svg>策略</a>
+                    </nav>
+                </div>
+            </div>
+            <figcaption>
+                <h3>② 成熟时间</h3>
+                <ul>
+                    <li>作物类型做成两张选择卡，顺手写上成熟总时长</li>
+                    <li>时间用「时 / 分胶囊」，旁边小字提示最多能填多少</li>
+                    <li>结果做成一张小票：成熟时刻最大，三项数据排在下面</li>
+                    <li>「最近」可以一点就填农场名（新小功能，不要也行）</li>
+                </ul>
+            </figcaption>
+        </figure>
+
+        <!-- ③ 浇水时间 -->
+        <figure class="shot">
+            <div class="phone">
+                <div class="statusbar"><span>20:41</span><svg><use href="#battery"/></svg></div>
+                <div class="screen">
+                    <header class="s-head">
+                        <div class="s-title">算算浇水时间<span class="tag-mini">🌸 英雄作物</span></div>
+                        <div class="s-desc">从种下那一刻起，帮你排好每一次浇水</div>
+                    </header>
+
+                    <div class="card">
+                        <div class="f">
+                            <div class="lbl">农场名称</div>
+                            <div class="inp"><span class="ico">🏷️</span><input value="琪琪的农场"></div>
+                        </div>
+                        <div class="lbl">种下时间</div>
+                        <div class="inp-row">
+                            <div class="inp"><span class="ico">📅</span>今天 14:30</div>
+                            <button class="btn-side">现在</button>
+                        </div>
+                        <div class="goal-chip">🎯 目标剩余<span class="dur"><b>11</b>小时<b>30</b>分</span><button>修改</button></div>
+                        <button class="btn primary">✨ 算一算</button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-h">浇水计划<span>共浇 2 次</span></div>
+                        <ol class="path">
+                            <li class="done">
+                                <span class="node">✓</span>
+                                <div class="pc">
+                                    <div class="p-row"><b>种下</b><time>14:30</time></div>
+                                    <p>自动浇满水 · 剩 29小时20分</p>
+                                </div>
+                            </li>
+                            <li class="done">
+                                <span class="node">✓</span>
+                                <div class="pc">
+                                    <div class="p-row"><b>第一次浇水</b><time>19:30</time></div>
+                                    <p>浇后剩 23小时05分</p>
+                                </div>
+                            </li>
+                            <li class="next">
+                                <span class="node"><svg><use href="#can"/></svg></span>
+                                <div class="pc">
+                                    <div class="p-row"><b>第二次浇水</b><time><small>明天</small>04:46</time></div>
+                                    <p>浇后剩 <span class="goal">11小时30分</span><span class="badge blue">还有 8小时05分</span></p>
+                                </div>
+                            </li>
+                            <li class="ripe">
+                                <span class="node">🌾</span>
+                                <div class="pc">
+                                    <div class="p-row"><b>成熟</b><time><small>明天</small>16:16</time></div>
+                                    <p>之后不再浇水的话</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="save"><button class="btn ghost"><svg><use href="#i-home"/></svg>存进小院</button></div>
+
+                    <nav class="tabbar">
+                        <a><svg><use href="#i-home"/></svg>小院</a>
+                        <a><svg><use href="#i-sprout"/></svg>成熟</a>
+                        <a class="on"><svg><use href="#i-drop"/></svg>浇水</a>
+                        <a><svg><use href="#i-compass"/></svg>策略</a>
+                    </nav>
+                </div>
+            </div>
+            <figcaption>
+                <h3>③ 浇水时间</h3>
+                <ul>
+                    <li>种下 → 浇水 → 成熟，连成一条虚线「田间小路」</li>
+                    <li>做完的步骤打勾变淡，下一步套蓝色光圈、带倒计时</li>
+                    <li>目标剩余时间做成一张可以改的便签条</li>
+                    <li>浇水用小水壶图标，补水用水滴，一眼分清</li>
+                </ul>
+            </figcaption>
+        </figure>
+
+        <!-- ④ 浇水策略 -->
+        <figure class="shot">
+            <div class="phone">
+                <div class="statusbar"><span>20:41</span><svg><use href="#battery"/></svg></div>
+                <div class="screen">
+                    <header class="s-head">
+                        <div class="s-title">算算浇水策略<span class="tag-mini">🌸 英雄作物</span></div>
+                        <div class="s-desc">现在就浇，还是先补水等一等？</div>
+                    </header>
+
+                    <div class="card">
+                        <div class="lbl">农场名称</div>
+                        <div class="inp"><span class="ico">🏷️</span><input value="Aura.情"></div>
+                        <div class="trows">
+                            <div class="trow">
+                                <div class="tlabel"><span class="ti b-peach">⏳</span><span>当前剩余<small>最多 29小时20分</small></span></div>
+                                <div class="tcap"><input value="22">时<input value="00">分</div>
+                            </div>
+                            <div class="trow">
+                                <div class="tlabel"><span class="ti b-water">💧</span><span>当前水分<small>最多 10小时40分</small></span></div>
+                                <div class="tcap"><input value="01">时<input value="00">分</div>
+                            </div>
+                        </div>
+                        <div class="goal-chip">🎯 目标剩余<span class="dur"><b>11</b>小时<b>30</b>分</span><button>修改</button></div>
+                        <button class="btn primary">✨ 算一算</button>
+                    </div>
+
+                    <div class="compare">
+                        <div class="compare-t">现在就浇的话，浇后剩 <span class="dur"><b>19</b>小时<b>35</b>分</span></div>
+                        <div class="cbar"><span class="a" style="width:59%">目标 11小时30分</span><span class="b" style="width:41%">多 8小时05分</span></div>
+                        <div class="compare-f">多出来的部分，靠「晚点再浇」用掉 ↓</div>
+                    </div>
+
+                    <div class="plan main">
+                        <div class="plan-h"><b>方案一 · 先补水</b><span>最后浇水更早</span><span class="rib">推荐</span></div>
+                        <ol class="path">
+                            <li class="next">
+                                <span class="node">💧</span>
+                                <div class="pc">
+                                    <div class="p-row"><b>补水</b><time>20:41 ~ 21:41</time></div>
+                                    <p>随时补一次，21:41 水会干<span class="badge blue">现在可以补</span></p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="node"><svg><use href="#can"/></svg></span>
+                                <div class="pc">
+                                    <div class="p-row"><b>浇水</b><time><small>明天</small>03:09</time></div>
+                                    <p>浇后剩 <span class="goal">11小时30分</span></p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="plan alt">
+                        <div class="plan-h"><b>方案二 · 不补水</b><span>只浇一次</span></div>
+                        <ol class="path">
+                            <li>
+                                <span class="node"><svg><use href="#can"/></svg></span>
+                                <div class="pc">
+                                    <div class="p-row"><b>浇水</b><time><small>明天</small>04:31</time></div>
+                                    <p>浇后剩 11小时30分</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="save"><button class="btn ghost"><svg><use href="#i-home"/></svg>存进小院</button></div>
+
+                    <nav class="tabbar">
+                        <a><svg><use href="#i-home"/></svg>小院</a>
+                        <a><svg><use href="#i-sprout"/></svg>成熟</a>
+                        <a><svg><use href="#i-drop"/></svg>浇水</a>
+                        <a class="on"><svg><use href="#i-compass"/></svg>策略</a>
+                    </nav>
+                </div>
+            </div>
+            <figcaption>
+                <h3>④ 浇水策略</h3>
+                <ul>
+                    <li>先用一根条直观看出：现在浇比目标多出多少</li>
+                    <li>推荐方案描橘色边、挂「推荐」，备选方案颜色收淡</li>
+                    <li>步骤和浇水页同一套小路样式，看过一次就会</li>
+                </ul>
+            </figcaption>
+        </figure>
+
+    </section>
+
+    <h2 class="section-title">细节：不再用系统弹窗</h2>
+    <p class="section-sub">现在的 alert / confirm 是灰色系统框，和整体风格不搭，也会打断操作</p>
+
+    <section class="tiles">
+        <div class="tile-wrap">
+            <div class="tile">
+                <div class="fake"></div><div class="fake"></div><div class="fake"></div>
+                <div class="toast">✓ 已存进小院<a>去看看 →</a></div>
+            </div>
+            <p><b>保存成功</b>：底部冒出一个小提示，两秒后自己消失。</p>
+        </div>
+        <div class="tile-wrap">
+            <div class="tile">
+                <div class="fake"></div><div class="fake"></div>
+                <div class="dim"></div>
+                <div class="sheet">
+                    <div class="grab"></div>
+                    <h5>删除「小桃园」？</h5>
+                    <p>删掉以后就找不回来了</p>
+                    <div class="sheet-btns"><button class="btn ghost">再想想</button><button class="btn danger">删除</button></div>
+                </div>
+            </div>
+            <p><b>删除确认</b>：从 ⋯ 点进来，底部弹出确认框，手指够得着。</p>
+        </div>
+        <div class="tile-wrap">
+            <div class="tile">
+                <div class="err-box">
+                    <div class="trow" style="border:0;padding:0">
+                        <div class="tlabel"><span class="ti b-water">💧</span><span>剩余水分<small>最多 10小时40分</small></span></div>
+                        <div class="tcap"><input value="12">时<input value="00">分</div>
+                    </div>
+                    <div class="err-msg">⚠️ 英雄作物的水分最多 10小时40分</div>
+                </div>
+            </div>
+            <p><b>输错了</b>：哪一格有问题就把那一格标红，原因写在正下方。</p>
+        </div>
+        <div class="tile-wrap">
+            <div class="tile">
+                <div class="empty">
+                    <svg viewBox="0 0 120 100" aria-hidden="true">
+                        <ellipse cx="60" cy="92" rx="38" ry="5" fill="#F1E3CF"/>
+                        <path d="M60 56V34" stroke="#7DB065" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M60 43c0-10-7-16-19-16 0 10 7 16 19 16z" fill="#A6D089"/>
+                        <path d="M60 39c0-9 6-14 16-14 0 9-6 14-16 14z" fill="#7DB065"/>
+                        <path d="M38 58h44l-6 31H44z" fill="#E59A69"/>
+                        <rect x="33" y="52" width="54" height="11" rx="5" fill="#F2B184"/>
+                    </svg>
+                    <b>小院还空着呢</b>
+                    <span>去「成熟」算一块田，存进来就能在这里看倒计时</span>
+                    <button class="btn primary">去算一块 🌱</button>
+                </div>
+            </div>
+            <p><b>空空的小院</b>：第一次打开不是一句灰字，而是一盆小苗和一个入口。</p>
+        </div>
+    </section>
+
+    <div class="keep">
+        <h4>不变的部分</h4>
+        <ul>
+            <li><b>计算规则一行不改</b>：作物参数、浇水缩短、浇水策略的算法原样保留，算出来的结果和现在完全一样。</li>
+            <li><b>老数据直接能用</b>：存储的名字和格式都不变，已经存的农场、浇水计划、策略升级后都还在，自动出现在小院里。</li>
+            <li><b>字体</b>：数字和英文用圆体 Nunito（打包进 APK，几十 KB，不需要联网），中文继续用手机自带字体。</li>
+            <li><b>顺带要改的</b>：Android 状态栏颜色从天蓝改成奶油色；头像用现有图标缩小一份放进 assets。</li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>
