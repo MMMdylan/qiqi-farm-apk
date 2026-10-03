@@ -2,7 +2,7 @@
 <style name="BaseAppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
     <item name="android:fontFamily">sans</item>
     <!-- 状态栏和页面顶部同色，图标用深色 -->
-    <item name="android:statusBarColor">#B7E6FF</item>
+    <item name="android:statusBarColor">#FFF8EF</item>
     <item name="android:windowLightStatusBar">true</item>
 </style>
 <style name="AppTheme" parent="BaseAppTheme"/>

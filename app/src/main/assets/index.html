@@ -3,270 +3,489 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>琪琪宝贝专属农场助手</title>
 <style>
+/* 数字和英文用圆体 Nunito（只含拉丁字符，许可见 fonts/OFL.txt），中文用手机自带字体 */
+@font-face{font-family:"Nunito";src:url(fonts/nunito-latin.woff2) format("woff2");font-weight:200 1000;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
-    --sky:#B7E6FF;--meadow:#DFF5B8;
-    --green-800:#2F5E1E;--green-700:#3F7A2A;--green-600:#4F9433;--green-500:#67AD43;
-    --green-200:#CFE6A8;--green-100:#EAF5DA;--green-50:#F5FAEC;
-    --orange-600:#DD7417;--orange-100:#FDEEDC;
-    --blue-700:#1E6FAF;--blue-100:#E1F0FB;
-    --red-700:#A93C3C;--red-600:#D35656;--red-100:#FCE9E9;
-    --gray-600:#687260;--gray-400:#A3AB9B;--gray-200:#E3E8DC;
-    --text:#2D3926;
+    --paper:#FFF8EF;--paper-2:#FCEEDC;--card:#FFFDFA;--line:#F1E3CF;--line-2:#E6D2B8;
+    --cocoa:#553F2F;--cocoa-2:#8A7260;--cocoa-3:#B5A08C;
+    --apricot:#F28C55;--apricot-d:#D46A33;--apricot-l:#FFE8D8;
+    --honey-l:#FFF2CE;--honey-ink:#80602C;
+    --blush-l:#FDE5E1;--blush-ink:#C0625A;
+    --peach-l:#FFEBD6;
+    --sage:#7DB065;--sage-d:#4F8A3B;--sage-l:#E4F1D8;
+    --water:#4DA3D1;--water-d:#2C81B0;--water-l:#DFF0F9;
+    --berry:#D65A62;--berry-d:#B6434B;--berry-l:#FCE2E1;
+    --wood-d:#9A6A42;
+    --font:"Nunito","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+    --shadow:0 12px 24px -16px rgba(140,90,40,.45);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+html{background:var(--paper)}
 html,body{margin:0}
-body{font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;font-size:16px;color:var(--text);-webkit-tap-highlight-color:transparent}
-button,input{font-family:inherit}
-
-.app{min-height:100vh;padding:16px 16px 100px;background:linear-gradient(var(--sky),var(--meadow))}
-body.typing .app{padding-bottom:16px}
-.app-title{margin:6px 0 14px;text-align:center;font-size:20px;font-weight:bold;color:var(--green-700);white-space:nowrap}
-
-/* 卡片 */
-.card{margin-bottom:14px;padding:16px;border-radius:20px;background:#fff;box-shadow:0 4px 14px rgba(47,94,30,.10)}
-.card-title{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:19px;color:var(--green-800)}
-.pill{padding:2px 9px;border-radius:999px;background:var(--green-100);font-size:12px;font-weight:normal;color:var(--green-700);white-space:nowrap}
-.card-title .pill{margin-left:auto}
-.placeholder,.empty{padding:10px 0 4px;text-align:center;font-size:15px;color:var(--gray-400)}
-
-/* 输入 */
-.field{margin-bottom:14px}
-.field>label{display:block;margin-bottom:6px;font-size:15px;font-weight:bold;color:var(--green-700)}
-.input{width:100%;height:48px;padding:0 14px;border:1.5px solid var(--green-200);border-radius:12px;outline:none;background:#fff;font-size:17px;color:var(--text)}
-.input:focus{border-color:var(--green-500)}
+body{min-height:100vh;background:radial-gradient(320px 190px at 100% 190px,rgba(255,222,190,.8),rgba(255,222,190,0)) no-repeat;font-family:var(--font);font-size:15px;color:var(--cocoa);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{margin:0;-webkit-appearance:none}
-.row{display:flex;gap:10px}
-.row>.input{flex:1;min-width:0}
-.unit{position:relative;flex:1;min-width:0}
-.unit .input{padding-right:50px}
-.unit span{position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:15px;color:var(--gray-600);pointer-events:none}
-.seg{display:flex;gap:4px;padding:4px;border:1.5px solid var(--green-200);border-radius:14px;background:var(--green-50)}
-.seg button{flex:1;height:40px;border:0;border-radius:10px;background:none;font-size:16px;color:var(--gray-600)}
-.seg button.on{background:var(--green-500);font-weight:bold;color:#fff}
-.side-btn{flex:none;width:76px;height:48px;border:1.5px solid var(--green-200);border-radius:12px;background:var(--green-50);font-size:16px;color:var(--green-700)}
-.target{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;border-radius:12px;background:var(--orange-100);font-size:15px}
-.target b{margin-left:auto;font-size:17px;color:var(--orange-600)}
-.target button{padding:4px 2px;border:0;background:none;font-size:15px;color:var(--green-600);text-decoration:underline}
-.target-edit{display:flex;gap:10px;margin:-6px 0 14px}
-.actions{display:flex;gap:10px}
-.btn{flex:1;height:50px;border:1.5px solid var(--green-500);border-radius:14px;background:#fff;font-size:18px;font-weight:bold;color:var(--green-700)}
-.btn.primary{background:var(--green-500);color:#fff}
-.btn:active{transform:scale(.98)}
 
-/* 计算成熟时间的结果 */
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.metric{padding:12px;border-radius:14px;background:var(--green-50)}
-.metric span{display:block;font-size:13px;color:var(--gray-600)}
-.metric b{display:block;margin-top:4px;font-size:21px;color:var(--green-800);white-space:nowrap}
-.metric.hot{background:var(--orange-100)}
-.metric.hot b{color:var(--orange-600)}
+.app{max-width:520px;margin:0 auto;padding:8px 0 112px}
+body.typing .app{padding-bottom:24px}
 
-/* 浇水计划时间线 */
-.timeline{margin:0;padding:0;list-style:none}
-.timeline li{position:relative;display:flex;gap:10px;padding:0 0 16px 24px}
-.timeline li::before{content:"";position:absolute;top:7px;left:4px;width:12px;height:12px;border-radius:50%;background:var(--blue-700)}
-.timeline li::after{content:"";position:absolute;top:23px;bottom:2px;left:9px;width:2px;background:var(--gray-200)}
-.timeline li:last-child{padding-bottom:4px}
-.timeline li:last-child::after{display:none}
-.timeline time{min-width:56px;font-size:20px;font-weight:bold;color:var(--blue-700)}
-.timeline time small{display:block;font-size:12px;font-weight:normal}
-.timeline li.past::before{background:var(--gray-400)}
-.timeline li.past time{color:var(--gray-400)}
-.timeline b{font-size:16px}
-.timeline em{margin-left:6px;padding:1px 7px;border-radius:999px;background:var(--gray-200);font-size:12px;font-style:normal;color:var(--gray-600)}
-.timeline li.next em{background:var(--blue-100);color:var(--blue-700)}
-.timeline p{margin:2px 0 0;font-size:14px;color:var(--gray-600)}
-strong.goal{font-size:16px;color:var(--orange-600)}
-.note{margin-top:10px;padding:8px 12px;border-radius:10px;background:var(--green-50);font-size:14px;color:var(--gray-600)}
+/* 时长：数字大、单位小 */
+.dur{font-weight:800;white-space:nowrap}
+.dur b{margin:0 1px;font-size:1.45em;font-weight:900;letter-spacing:.3px}
+.tilde{margin:0 .2em;font-size:.7em;font-weight:800;opacity:.75}
+
+/* ===== 小院首页 ===== */
+.home-head{display:flex;align-items:center;gap:12px;padding:12px 20px 18px}
+.hh-text{flex:1;min-width:0}
+.hello{font-size:14px;font-weight:800;color:var(--cocoa-2)}
+.sign{position:relative;display:inline-block;margin:8px 0 9px;padding:7px 22px 8px;border-radius:12px;background:repeating-linear-gradient(177deg,rgba(255,255,255,.08) 0 3px,rgba(90,50,20,.04) 3px 7px),linear-gradient(#DBA878,#C38B5B);font-size:22px;font-weight:900;letter-spacing:3px;color:#FFF7EA;text-shadow:0 1px 0 rgba(110,60,20,.45);white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(120,70,30,.16),0 3px 0 var(--wood-d)}
+.sign::before,.sign::after{content:"";position:absolute;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#8C5E38;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.sign::before{left:8px}
+.sign::after{right:8px}
+.today{font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.today b{color:var(--sage-d)}
+.avatar{flex:none;width:66px;height:66px;border-radius:22px;object-fit:cover;box-shadow:0 0 0 3px #fff,0 8px 16px -6px rgba(120,80,40,.5);transform:rotate(4deg)}
+
+.hero{position:relative;overflow:hidden;margin:0 16px 18px;padding:16px 18px;border-radius:26px;background:linear-gradient(145deg,#FFE3C8,#FFC49E);box-shadow:0 14px 26px -14px rgba(214,106,51,.65)}
+.hero-eyebrow{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:900;color:#B0703F}
+.hero-eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.7}
+.hero-eyebrow.now{color:var(--apricot-d)}
+.hero-eyebrow.now::before{opacity:1;animation:pulse 1.6s ease-out infinite}
+.hero-art{position:absolute;top:34px;right:10px;width:76px;height:76px;transform:rotate(-8deg);pointer-events:none}
+.hero-emoji{display:flex;align-items:center;justify-content:center;font-size:54px;line-height:1}
+.hero-title,.hero-time,.hero-sub,.hero-foot{position:relative}
+.hero-title{margin-top:9px;padding-right:84px;font-size:17px;font-weight:700}
+.hero-title b{display:inline-block;max-width:9em;overflow:hidden;font-weight:900;white-space:nowrap;text-overflow:ellipsis;vertical-align:bottom}
+.hero-time{margin-top:1px;font-size:clamp(28px,8.4vw,34px);font-weight:900;line-height:1.15;letter-spacing:.5px;white-space:nowrap}
+.hero-time small{margin-right:4px;font-size:16px;font-weight:900;color:#A27458}
+.hero-sub{margin-top:2px;font-size:13px;font-weight:700;color:#7A5A44}
+.hero-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:13px}
+.hero-pill{padding:5px 12px;border-radius:999px;background:#FFFCF8;font-size:13px;font-weight:800;color:var(--apricot-d)}
+.hero-pill .dur b{font-size:1.3em}
+.hero-then{font-size:12.5px;font-weight:700;color:#8A6A52}
+.hero .more{position:absolute;z-index:1;top:10px;right:10px;color:#B0805C}
+.hero .toggle{color:#8A6A52}
+.hero .detail{background:rgba(255,255,255,.55)}
+
+.chips{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 13px;border:1px solid var(--line-2);border-radius:999px;background:var(--card);font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.chip i{margin-left:3px;font-style:normal;color:var(--cocoa-3)}
+.chip.on{border-color:var(--cocoa);background:var(--cocoa);color:#FFF6EA}
+.chip.on i{color:#E2C6AC}
+
+.rec{display:flex;gap:12px;margin:0 16px 12px;padding:14px;border:1px solid var(--line);border-radius:22px;background:var(--card);box-shadow:0 10px 20px -14px rgba(140,90,40,.4)}
+.rec[data-key]{cursor:pointer}
+.badge-ic{flex:none;display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:16px;font-size:24px}
+.b-blush{background:var(--blush-l)}
+.b-peach{background:var(--peach-l)}
+.b-water{background:var(--water-l)}
+.b-sage{background:var(--sage-l)}
+.b-honey{background:var(--honey-l)}
+.rec-body{flex:1;min-width:0}
+.rec-top{display:flex;align-items:center;gap:6px}
+.rec-name{min-width:0;overflow:hidden;font-size:16px;font-weight:900;white-space:nowrap;text-overflow:ellipsis}
+.kind{flex:none;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
+.k-apricot{background:var(--apricot-l);color:var(--apricot-d)}
+.k-water{background:var(--water-l);color:var(--water-d)}
+.k-sage{background:var(--sage-l);color:var(--sage-d)}
+.k-honey{background:var(--honey-l);color:var(--honey-ink)}
+.more{flex:none;width:32px;height:28px;margin:-4px -6px -4px auto;padding:0;border:0;border-radius:10px;background:none;font-size:18px;font-weight:900;line-height:1;color:var(--cocoa-3)}
+.more:active{background:rgba(85,63,47,.08)}
+.rec-main{margin-top:3px;font-size:13.5px;font-weight:700;color:var(--cocoa-2)}
+.rec-main .dur{color:var(--apricot-d)}
+.rec-sub{margin-top:2px;font-size:12.5px;font-weight:700;color:var(--cocoa-3)}
+.clock{font-size:20px;font-weight:900;color:var(--water-d)}
+.clock small{margin-right:3px;font-size:13px}
+.bar{position:relative;height:8px;margin:10px 12px 4px 0;border-radius:99px;background:var(--paper-2)}
+.bar i{position:absolute;top:0;bottom:0;left:0;border-radius:99px;background:linear-gradient(90deg,#BCDD98,var(--sage))}
+.bar i::after{content:"🌱";position:absolute;top:50%;right:-10px;font-size:16px;font-style:normal;transform:translateY(-58%)}
+.rec.ripe{border-color:#D3E7BF;background:linear-gradient(135deg,#F1F9E7,#FFFDFA 70%)}
+.rec.ripe .rec-main{font-size:15px;font-weight:900;color:var(--sage-d)}
+.rec.ripe .bar i::after{content:"🌾"}
+.rec.finished{opacity:.72}
+.done-text{font-size:15px;font-weight:900;color:var(--sage-d)}
+
+.mini-steps{display:flex;margin:10px 0 0;padding:0;list-style:none}
+.mini-steps li{position:relative;flex:1;min-width:0;padding-top:15px;font-size:11px;font-weight:700;text-align:center;color:var(--cocoa-3)}
+.mini-steps li::before{content:"";position:absolute;z-index:1;top:0;left:50%;width:11px;height:11px;margin-left:-5.5px;border:2px solid var(--line-2);border-radius:50%;background:var(--paper);box-sizing:border-box}
+.mini-steps li::after{content:"";position:absolute;top:4.5px;left:-50%;width:100%;height:2px;background:var(--line-2)}
+.mini-steps li:first-child::after{display:none}
+.mini-steps li.done{color:var(--cocoa-2)}
+.mini-steps li.done::before{border-color:var(--sage);background:var(--sage)}
+.mini-steps li.done::after,.mini-steps li.next::after{background:var(--sage)}
+.mini-steps li.next{font-weight:900;color:var(--water-d)}
+.mini-steps li.next::before{border-color:var(--water);background:#fff;box-shadow:0 0 0 3px var(--water-l)}
+
+.toggle{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:0;border:0;background:none;font-size:12.5px;font-weight:800;color:var(--cocoa-3)}
+.toggle::after{content:"";width:6px;height:6px;margin-top:-4px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg)}
+.open .toggle::after{margin-top:3px;transform:rotate(-135deg)}
+.detail{display:none;margin-top:8px;padding:9px 12px;border-radius:14px;background:var(--paper)}
+.open .detail{display:block}
+.detail-meta{font-size:12.5px;font-weight:700;line-height:1.9;color:var(--cocoa-3)}
+.mini{margin:0;padding:0;list-style:none;font-size:13px;font-weight:700;line-height:1.9;color:var(--cocoa-2)}
+.mini .mark{display:inline-block;width:1.3em;color:var(--water-d)}
+.mini .passed{color:var(--cocoa-3)}
+.mini .passed .mark{color:var(--sage-d)}
+.mini .alt{color:var(--cocoa-3)}
+
+.empty{display:flex;flex-direction:column;align-items:center;padding:30px 36px 10px;text-align:center}
+.empty svg{width:120px;height:100px}
+.empty b{margin-top:6px;font-size:17px;font-weight:900}
+.empty span{margin:4px 0 16px;font-size:13px;font-weight:700;line-height:1.6;color:var(--cocoa-2)}
+.empty .btn{width:auto;margin:0;padding:0 24px}
+
+/* ===== 计算页 ===== */
+.s-head{padding:14px 20px 16px}
+.s-title{display:flex;align-items:center;gap:8px;margin:0;font-size:23px;font-weight:900;letter-spacing:1px}
+.s-desc{margin:3px 0 0;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.tag-mini{padding:2px 9px;border-radius:999px;background:var(--blush-l);font-size:12px;font-weight:800;letter-spacing:0;color:var(--blush-ink)}
+
+.card{margin:0 16px 14px;padding:16px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow)}
+.lbl{display:block;margin:0 0 7px;font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.f{margin-bottom:14px}
+.inp{display:flex;align-items:center;gap:8px;min-width:0;height:48px;padding:0 14px;border:1.5px solid var(--line);border-radius:16px;background:var(--paper);font-size:16px;font-weight:800}
+.inp input{flex:1;min-width:0;height:100%;padding:0;border:0;outline:0;background:none;font-weight:800}
+.inp input::placeholder{font-weight:700;color:var(--cocoa-3)}
+.inp .ico{flex:none;font-size:16px}
+.recent{display:flex;align-items:center;gap:6px;margin-top:8px;overflow:hidden;font-size:12px;font-weight:700;white-space:nowrap;color:var(--cocoa-3)}
+.recent button{flex:none;max-width:8em;height:26px;overflow:hidden;padding:0 10px;border:1px dashed var(--line-2);border-radius:999px;background:none;font-size:12px;font-weight:800;text-overflow:ellipsis;color:var(--cocoa-2)}
+
+.crop-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crop{position:relative;display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1.5px solid var(--line);border-radius:18px;background:var(--paper);text-align:left}
+.crop .em{flex:none;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:13px;background:#fff;font-size:21px}
+.crop b{display:block;font-size:15px;font-weight:900;white-space:nowrap}
+.crop small{display:block;font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--cocoa-3)}
+.crop .check{position:absolute;top:-7px;right:-7px;display:none;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;background:var(--apricot);font-size:12px;font-style:normal;font-weight:900;color:#fff;box-shadow:0 0 0 2px var(--card)}
+.crop.on{border-color:var(--apricot);background:var(--apricot-l);box-shadow:0 3px 0 #F5C19D}
+.crop.on .check{display:flex}
+.crop[data-crop=hero].on .em{background:var(--blush-l)}
+.crop[data-crop=eco].on .em{background:var(--peach-l)}
+
+.trows{margin-top:14px}
+.trows>.field{border-top:1px dashed var(--line-2)}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0}
+.tlabel{display:flex;align-items:center;gap:9px;min-width:0;font-size:14.5px;font-weight:900}
+.tlabel .ti{flex:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:11px;font-size:16px}
+.tlabel small{display:block;font-size:11px;font-weight:700;white-space:nowrap;color:var(--cocoa-3)}
+.tcap{flex:none;display:flex;align-items:center;height:50px;padding:0 10px;border:1.5px solid var(--line);border-radius:16px;background:var(--paper);font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.tcap input{width:44px;height:100%;padding:0;border:0;outline:0;background:none;font-size:26px;font-weight:900;text-align:center;color:var(--cocoa)}
+.tcap input::placeholder{color:var(--line-2)}
+
+.goal-chip{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 10px 9px 12px;border:1.5px dashed #EBCB7C;border-radius:16px;background:var(--honey-l);font-size:13.5px;font-weight:800;color:var(--honey-ink)}
+.goal-chip .dur{margin-left:auto;color:var(--apricot-d)}
+.goal-chip .dur b{font-size:1.3em}
+.goal-chip button{flex:none;height:28px;padding:0 10px;border:0;border-radius:10px;background:#fff;font-size:12.5px;font-weight:900;color:var(--apricot-d)}
+.goal-edit{margin-top:10px}
+.goal-row{display:flex;align-items:center;gap:8px}
+.goal-row .tcap{flex:1;justify-content:center}
+
+.inp-row{display:flex;gap:8px}
+.inp-row .inp{flex:1}
+.btn-side{flex:none;height:48px;padding:0 16px;border:1.5px solid var(--line-2);border-radius:16px;background:var(--card);font-size:14px;font-weight:900;color:var(--apricot-d);box-shadow:0 3px 0 var(--line-2)}
+.goal-row .btn-side{height:50px}
+
+.inp:focus-within,.tcap:focus-within{border-color:var(--apricot);background:#fff;box-shadow:0 0 0 4px var(--apricot-l)}
+.field.err .inp,.field.err .tcap{border-color:var(--berry);background:#FFF6F5;box-shadow:0 0 0 4px var(--berry-l)}
+.err-msg{margin:8px 0 2px;padding:8px 12px;border-radius:12px;background:var(--berry-l);font-size:12.5px;font-weight:800;line-height:1.5;color:var(--berry-d)}
+.trows .err-msg{margin:-2px 0 11px}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border:0;border-radius:18px;font-size:17px;font-weight:900;letter-spacing:2px}
+.btn svg{width:20px;height:20px;fill:rgba(242,140,85,.22);stroke:var(--apricot-d);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn.primary{margin-top:16px;background:linear-gradient(#F89E6B,var(--apricot));color:#fff;text-shadow:0 1px 0 rgba(170,70,20,.3);box-shadow:0 4px 0 var(--apricot-d),0 12px 20px -10px rgba(214,106,51,.7)}
+.btn.ghost{border:1.5px solid var(--line-2);background:var(--card);color:var(--cocoa);box-shadow:0 3px 0 var(--line-2)}
+.btn.danger{background:var(--berry);color:#fff;box-shadow:0 4px 0 var(--berry-d)}
+.btn:active,.btn-side:active,.crop:active{transform:translateY(2px)}
+.btn.primary:active{box-shadow:0 2px 0 var(--apricot-d),0 8px 16px -10px rgba(214,106,51,.7)}
+.btn.ghost:active,.btn-side:active{box-shadow:0 1px 0 var(--line-2)}
+.save{margin:0 16px 14px}
+
+.result{animation:rise .28s ease-out}
+.tip{margin:0 16px 14px;padding:12px 16px;border-radius:18px;background:var(--honey-l);font-size:13.5px;font-weight:800;color:var(--honey-ink)}
+.warn{padding:14px 16px;border-radius:16px;background:var(--berry-l);font-size:14px;font-weight:700;line-height:1.7;color:#A6404A}
+.warn b{font-size:16px;font-weight:900}
+.nw{white-space:nowrap}
+
+/* 成熟结果小票 */
+.ticket{position:relative;overflow:hidden;margin:0 16px 14px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow)}
+.ticket-top{padding:16px 18px}
+.t-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:700;color:var(--cocoa-3)}
+.t-tag{padding:2px 9px;border-radius:999px;font-weight:800}
+.t-tag.t-hero{background:var(--blush-l);color:var(--blush-ink)}
+.t-tag.t-eco{background:var(--peach-l);color:var(--apricot-d)}
+.t-label{margin-top:12px;font-size:13px;font-weight:800;color:var(--cocoa-2)}
+.t-big{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;margin-top:2px;color:var(--apricot-d)}
+.t-big small{font-size:17px;font-weight:900}
+.t-big b{font-size:46px;font-weight:900;line-height:1.05;letter-spacing:.5px}
+.t-count{margin-top:6px;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.cut{position:relative;margin:0 16px;border-top:2px dashed var(--line-2)}
+.cut::before,.cut::after{content:"";position:absolute;top:-12px;width:22px;height:22px;border:1px solid var(--line);border-radius:50%;background:var(--paper)}
+.cut::before{left:-28px}
+.cut::after{right:-28px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);padding:14px 8px 16px}
+.stat{min-width:0;text-align:center}
+.stat+.stat{border-left:1px solid var(--line)}
+.stat>span:first-child{display:block;font-size:11.5px;font-weight:800;color:var(--cocoa-3)}
+.stat .dur{display:block;margin-top:4px;font-size:11.5px}
+.stat .dur b{font-size:19px}
+
+/* 浇水步骤：田间小路 */
+.card-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:14px;font-size:17px;font-weight:900}
+.card-h span{font-size:12px;font-weight:800;color:var(--cocoa-3)}
+.path{margin:0;padding:0;list-style:none}
+.path li{position:relative;display:flex;gap:12px;padding-bottom:18px}
+.path li:last-child{padding-bottom:0}
+.path li:not(:last-child)::after{content:"";position:absolute;top:44px;bottom:3px;left:19px;border-left:2px dashed var(--line-2)}
+.node{flex:none;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:14px;background:var(--paper);font-size:20px}
+.node svg{width:28px;height:28px}
+.node .ic{display:flex;font-style:normal}
+.pc{flex:1;min-width:0;padding-top:2px}
+.p-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.p-row b{font-size:15px;font-weight:900;white-space:nowrap}
+.p-row time{font-size:19px;font-weight:900;white-space:nowrap}
+.p-row time small{margin-right:3px;font-size:12px;font-weight:800;color:var(--cocoa-3)}
+.pc p{margin:2px 0 0;font-size:12.5px;font-weight:700;line-height:1.6;color:var(--cocoa-2)}
+.badge{display:inline-block;margin-left:6px;padding:0 8px;border-radius:999px;background:var(--paper-2);font-size:11px;font-style:normal;font-weight:900;line-height:19px;color:var(--cocoa-2);white-space:nowrap}
+.path li.done .node{background:var(--sage-l);font-size:17px;font-weight:900;color:var(--sage-d)}
+.path li.done .node .ic{display:none}
+.path li.done .node::before{content:"✓"}
+.path li.done b,.path li.done time,.path li.done p{color:var(--cocoa-3)}
+.path li.done .badge{display:none}
+.path li.next .node{background:var(--water-l);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--water)}
+.path li.next time{color:var(--water-d)}
+.path li.next .badge{background:var(--water-l);color:var(--water-d)}
+.path li[data-type=ripe] .node{background:var(--honey-l)}
+.goal{font-weight:900;color:var(--apricot-d)}
+.note{margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--honey-l);font-size:13px;font-weight:700;line-height:1.6;color:var(--honey-ink)}
 
 /* 浇水策略 */
-.summary{margin-bottom:10px;font-size:15px;color:var(--gray-600)}
-.summary b{font-size:17px;color:var(--green-800)}
-.plan{margin-top:10px;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:14px}
-.plan.main{border-color:var(--green-500);background:var(--green-50)}
-.plan-head{display:flex;align-items:baseline;gap:8px;font-size:15px;font-weight:bold;color:var(--green-800)}
-.plan-head span{font-size:12px;font-weight:normal;color:var(--gray-600)}
-.step{display:flex;gap:10px;padding:10px 0 2px}
-.step+.step{margin-top:8px;border-top:1px dashed var(--green-200)}
-.step i{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-top:3px;border-radius:50%;background:var(--blue-700);font-size:13px;font-style:normal;color:#fff}
-.plan:not(.main) .step i{background:var(--gray-400)}
-.step-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px}
-.step-row span{font-size:16px;font-weight:bold}
-.step-row time{font-size:20px;font-weight:bold;color:var(--blue-700)}
-.step p{margin:2px 0 0;font-size:14px;color:var(--gray-600)}
-.nw{white-space:nowrap}
-.warn{padding:12px 14px;border-radius:12px;background:var(--red-100);font-size:15px;line-height:1.7;color:var(--red-700)}
-
-/* 列表 */
-.item{margin-top:10px;padding:12px;border:1.5px solid var(--green-100);border-radius:14px;background:var(--green-50)}
-.item:first-child{margin-top:0}
-.item-top{display:flex;align-items:center;gap:8px}
-.item-name{min-width:0;overflow:hidden;font-size:18px;font-weight:bold;color:var(--green-800);white-space:nowrap;text-overflow:ellipsis}
-.item-top .pill{border:1px solid var(--green-200);background:#fff}
-.del{flex:none;height:32px;margin-left:auto;padding:0 12px;border:1.5px solid var(--red-100);border-radius:10px;background:#fff;font-size:14px;color:var(--red-600)}
-.countdown{margin-top:8px;font-size:22px;font-weight:bold;color:var(--orange-600)}
-.countdown small{margin-right:4px;font-size:13px;font-weight:normal;color:var(--gray-600)}
-.item.ripe .countdown{color:var(--green-600)}
-.sub{margin-top:4px;font-size:14px;color:var(--gray-600)}
-.next{margin-top:8px;font-size:14px;color:var(--gray-600)}
-.next b{margin-right:4px;font-size:18px;color:var(--blue-700)}
-.mini{margin:6px 0 0;padding:0;list-style:none;font-size:14px;line-height:1.8;color:var(--gray-600)}
-.mini .passed,.mini .alt{color:var(--gray-400)}
-.item.finished{border-color:var(--gray-200);background:#fff}
-.item.finished .item-name,.item.finished .next b{color:var(--gray-400)}
+.compare{margin:0 16px 14px;padding:14px 16px 15px;border-radius:22px;background:var(--honey-l)}
+.compare-meta{font-size:12px;font-weight:700;color:#B0925C}
+.compare-t{margin-top:2px;font-size:13.5px;font-weight:800;color:var(--honey-ink)}
+.compare-t .dur{color:var(--cocoa)}
+.cbar{display:flex;height:30px;margin:10px 0 8px;overflow:hidden;border-radius:12px;background:#fff;font-size:11.5px;font-weight:900;line-height:30px;white-space:nowrap}
+.cbar span{overflow:hidden}
+.cbar .a{padding-left:10px;background:var(--sage);color:#fff}
+.cbar .b{padding-left:8px;background:repeating-linear-gradient(-45deg,#F7CF73 0 6px,#F3C35C 6px 12px);color:var(--honey-ink)}
+.cbar .tight{padding:0;color:transparent}
+.compare-f{font-size:12.5px;font-weight:700;color:var(--honey-ink)}
+.plan{margin:0 16px 12px;padding:14px 16px 16px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+.plan.main{border:2px solid var(--apricot);box-shadow:0 12px 24px -16px rgba(214,106,51,.8)}
+.plan-h{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.plan-h b{font-size:16px;font-weight:900}
+.plan-h span{font-size:12px;font-weight:700;color:var(--cocoa-3)}
+.plan-h .rib{margin-left:auto;padding:2px 10px;border-radius:999px;background:var(--apricot);font-size:11.5px;font-weight:900;color:#fff}
+.plan .path{margin-top:14px}
+.plan.alt .node{filter:saturate(.35);opacity:.8}
+.plan.alt .goal{color:inherit}
 
 /* 底部标签栏 */
-.tabbar{position:fixed;right:0;bottom:0;left:0;display:flex;padding:6px 8px 8px;border-top:1px solid var(--gray-200);background:#fff;box-shadow:0 -2px 10px rgba(47,94,30,.06)}
+.tabbar{position:fixed;z-index:10;bottom:12px;left:50%;display:flex;width:calc(100% - 24px);max-width:496px;padding:6px;border-radius:24px;background:rgba(255,253,249,.97);box-shadow:0 0 0 1px var(--line),0 12px 24px -10px rgba(120,80,40,.35);transform:translateX(-50%)}
 body.typing .tabbar{display:none}
-.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0;border:0;background:none;font-size:13px;color:var(--gray-600)}
-.tabbar .ic{display:flex;align-items:center;justify-content:center;width:58px;height:30px;border-radius:15px;font-size:19px}
-.tabbar button.on{font-weight:bold;color:var(--green-700)}
-.tabbar button.on .ic{background:var(--green-100)}
+.tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0 5px;border:0;border-radius:18px;background:none;font-size:12px;font-weight:800;color:var(--cocoa-3)}
+.tabbar svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabbar button.on{background:var(--apricot-l);color:var(--apricot-d)}
+.tabbar button.on svg{fill:rgba(242,140,85,.22)}
+
+/* 轻提示和删除确认 */
+.toast{position:fixed;z-index:20;bottom:96px;left:50%;display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:11px 18px;border-radius:999px;background:var(--cocoa);font-size:14px;font-weight:800;color:#FFF6EA;white-space:nowrap;box-shadow:0 12px 24px -10px rgba(60,40,20,.6);transform:translateX(-50%);animation:toast-in .25s ease-out}
+body.typing .toast{bottom:24px}
+.toast button{padding:0;border:0;background:none;font-weight:900;color:#FFC49E}
+.sheet-wrap{position:fixed;z-index:30;top:0;right:0;bottom:0;left:0}
+.dim{position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(85,63,47,.38);animation:fade .2s ease-out}
+.sheet{position:absolute;right:0;bottom:0;left:0;max-width:520px;margin:0 auto;padding:10px 18px 22px;border-radius:26px 26px 0 0;background:var(--card);text-align:center;animation:sheet-in .25s ease-out}
+.grab{width:40px;height:5px;margin:0 auto 14px;border-radius:9px;background:var(--line-2)}
+.sheet h3{margin:0;padding:0 10px;overflow:hidden;font-size:17px;font-weight:900;white-space:nowrap;text-overflow:ellipsis}
+.sheet p{margin:4px 0 18px;font-size:13px;font-weight:700;color:var(--cocoa-2)}
+.sheet-btns{display:flex;gap:10px}
+.sheet-btns .btn{height:48px;font-size:16px}
+
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+@keyframes fade{from{opacity:0}}
+@keyframes sheet-in{from{transform:translateY(100%)}}
+@keyframes toast-in{from{opacity:0;transform:translate(-50%,10px)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(214,106,51,.45)}100%{box-shadow:0 0 0 8px rgba(214,106,51,0)}}
+@media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+}
 </style>
 </head>
 <body>
+
+<!-- 图标 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+        <symbol id="can" viewBox="0 0 96 96">
+            <path d="M31 38c0-15 25-15 25 0" fill="none" stroke="#D69A2E" stroke-width="6" stroke-linecap="round"/>
+            <path d="M58 54 80 31" stroke="#F2B845" stroke-width="10" stroke-linecap="round"/>
+            <ellipse cx="82" cy="29" rx="8" ry="5.5" transform="rotate(-45 82 29)" fill="#E2A137"/>
+            <rect x="18" y="37" width="46" height="41" rx="13" fill="#F5C455" stroke="#D69A2E" stroke-width="3"/>
+            <path d="M27 50c3-5 9-6 13-5" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="4" stroke-linecap="round"/>
+            <path d="M41 70c-8-5.5-8-11.5-4-12.6 2-.5 3.4.6 4 2 .6-1.4 2-2.5 4-2 4 1.1 4 7.1-4 12.6z" fill="#F09A93"/>
+            <g fill="#4DA3D1">
+                <path d="M88 41c2.2 3.2 3.3 4.8 3.3 6.3a3.3 3.3 0 0 1-6.6 0c0-1.5 1.1-3.1 3.3-6.3z"/>
+                <path d="M79 49c2.2 3.2 3.3 4.8 3.3 6.3a3.3 3.3 0 0 1-6.6 0c0-1.5 1.1-3.1 3.3-6.3z"/>
+                <path d="M89.5 56c1.7 2.5 2.6 3.7 2.6 4.9a2.6 2.6 0 0 1-5.2 0c0-1.2.9-2.4 2.6-4.9z"/>
+            </g>
+        </symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v10a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1V9"/></symbol>
+        <symbol id="i-sprout" viewBox="0 0 24 24"><path d="M12 20v-7"/><path d="M12 13C12 9 9.5 6.5 5 6.5 5 10.5 7.5 13 12 13z"/><path d="M12 11c0-3.5 2.3-6 6.5-6 0 3.8-2.4 6-6.5 6z"/><path d="M7.5 20h9"/></symbol>
+        <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5c3.2 4 6.5 7.5 6.5 11a6.5 6.5 0 0 1-13 0c0-3.5 3.3-7 6.5-11z"/></symbol>
+        <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2.2 4.8-4.8 2.2 2.2-4.8z"/></symbol>
+    </defs>
+</svg>
+
 <div class="app">
 
-    <div class="app-title">🌱 琪琪宝贝专属农场助手 🌱</div>
+    <!-- 小院：所有保存的记录 -->
+    <section class="page" data-page="home">
+        <header class="home-head">
+            <div class="hh-text">
+                <div class="hello" id="h-hello"></div>
+                <div class="sign">琪琪的小院</div>
+                <div class="today" id="h-today"></div>
+            </div>
+            <img class="avatar" src="avatar.jpg" alt="">
+        </header>
+        <div id="h-body"></div>
+    </section>
 
     <!-- 计算成熟时间 -->
-    <section class="page" data-page="maturity">
+    <section class="page" data-page="maturity" hidden>
+        <header class="s-head">
+            <h1 class="s-title">算算成熟时间</h1>
+            <p class="s-desc">告诉我田里现在的样子，帮你算最快几点能收</p>
+        </header>
         <div class="card">
-            <h2 class="card-title">⏳ 计算成熟时间</h2>
-            <div class="field">
-                <label for="m-name">农场名称</label>
-                <input class="input" id="m-name" placeholder="例如：Aura.情">
+            <div class="field f">
+                <label class="lbl" for="m-name">农场名称</label>
+                <div class="inp"><span class="ico">🏷️</span><input id="m-name" placeholder="例如：Aura.情" autocomplete="off"></div>
+                <div class="recent" data-for="m-name" hidden></div>
             </div>
-            <div class="field">
-                <label>作物类型</label>
-                <div class="seg" id="m-crop">
-                    <button type="button" data-crop="hero" class="on">🌸 英雄作物</button>
-                    <button type="button" data-crop="eco">🍑 经济作物</button>
+            <div class="lbl">作物类型</div>
+            <div class="crop-pick" id="m-crop">
+                <button type="button" class="crop on" data-crop="hero"><span class="em">🌸</span><span><b>英雄作物</b><small>32 小时成熟</small></span><i class="check">✓</i></button>
+                <button type="button" class="crop" data-crop="eco"><span class="em">🍑</span><span><b>经济作物</b><small>16 小时成熟</small></span><i class="check">✓</i></button>
+            </div>
+            <div class="trows">
+                <div class="field" data-field="remain">
+                    <div class="trow">
+                        <div class="tlabel"><span class="ti b-peach">⏳</span><span>剩余成熟<small id="m-remain-max"></small></span></div>
+                        <div class="tcap"><input id="m-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>时</span><input id="m-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分</span></div>
+                    </div>
+                </div>
+                <div class="field" data-field="water">
+                    <div class="trow">
+                        <div class="tlabel"><span class="ti b-water">💧</span><span>剩余水分<small id="m-water-max"></small></span></div>
+                        <div class="tcap"><input id="m-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>时</span><input id="m-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分</span></div>
+                    </div>
                 </div>
             </div>
-            <div class="field">
-                <label>剩余成熟时间</label>
-                <div class="row">
-                    <div class="unit"><input class="input" id="m-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
-                    <div class="unit"><input class="input" id="m-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
-                </div>
-            </div>
-            <div class="field">
-                <label>剩余水分时间</label>
-                <div class="row">
-                    <div class="unit"><input class="input" id="m-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
-                    <div class="unit"><input class="input" id="m-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
-                </div>
-            </div>
-            <div class="actions">
-                <button type="button" class="btn primary" id="m-calc">计算</button>
-                <button type="button" class="btn" id="m-save">保存到列表</button>
-            </div>
+            <button type="button" class="btn primary" id="m-calc">✨ 算一算</button>
         </div>
-
-        <div class="card">
-            <h2 class="card-title">📋 计算结果<span class="pill" id="m-time" hidden></span></h2>
-            <div id="m-result"><div class="placeholder">填好上面的内容，点「计算」</div></div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">🌾 农场列表<span class="pill" id="m-count" hidden></span></h2>
-            <div id="m-list"></div>
-        </div>
+        <div id="m-result" hidden></div>
     </section>
 
     <!-- 计算浇水时间（英雄作物） -->
     <section class="page" data-page="watering" hidden>
+        <header class="s-head">
+            <h1 class="s-title">算算浇水时间<span class="tag-mini">🌸 英雄作物</span></h1>
+            <p class="s-desc">从种下那一刻起，帮你排好每一次浇水</p>
+        </header>
         <div class="card">
-            <h2 class="card-title">💧 计算浇水时间<span class="pill">英雄作物</span></h2>
-            <div class="field">
-                <label for="w-name">农场名称</label>
-                <input class="input" id="w-name" placeholder="例如：琪琪的农场">
+            <div class="field f">
+                <label class="lbl" for="w-name">农场名称</label>
+                <div class="inp"><span class="ico">🏷️</span><input id="w-name" placeholder="例如：琪琪的农场" autocomplete="off"></div>
+                <div class="recent" data-for="w-name" hidden></div>
             </div>
-            <div class="field">
-                <label for="w-plant">种下时间</label>
-                <div class="row">
-                    <input class="input" id="w-plant" type="datetime-local">
-                    <button type="button" class="side-btn" id="w-now">现在</button>
+            <div class="field" data-field="plant">
+                <label class="lbl" for="w-plant">种下时间</label>
+                <div class="inp-row">
+                    <div class="inp"><span class="ico">📅</span><input id="w-plant" type="datetime-local"></div>
+                    <button type="button" class="btn-side" id="w-now">现在</button>
                 </div>
             </div>
-            <div class="target">🎯 目标剩余时间<b class="target-value"></b><button type="button" class="target-toggle">修改</button></div>
-            <div class="target-edit" hidden>
-                <div class="unit"><input class="input target-h" type="number" inputmode="numeric" min="0"><span>小时</span></div>
-                <div class="unit"><input class="input target-m" type="number" inputmode="numeric" min="0"><span>分钟</span></div>
-                <button type="button" class="side-btn target-ok">确定</button>
+            <div class="target-box">
+                <div class="goal-chip">🎯 目标剩余<span class="target-value"></span><button type="button" class="target-toggle">修改</button></div>
+                <div class="goal-edit field" hidden>
+                    <div class="goal-row">
+                        <div class="tcap"><input class="target-h" type="number" inputmode="numeric" min="0"><span>时</span><input class="target-m" type="number" inputmode="numeric" min="0"><span>分</span></div>
+                        <button type="button" class="btn-side target-ok">确定</button>
+                    </div>
+                </div>
             </div>
-            <div class="actions">
-                <button type="button" class="btn primary" id="w-calc">计算</button>
-                <button type="button" class="btn" id="w-save">保存到列表</button>
-            </div>
+            <button type="button" class="btn primary" id="w-calc">✨ 算一算</button>
         </div>
-
-        <div class="card">
-            <h2 class="card-title">📋 浇水计划</h2>
-            <div id="w-result"><div class="placeholder">选好种下时间，点「计算」</div></div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">💧 浇水时间列表<span class="pill" id="w-count" hidden></span></h2>
-            <div id="w-list"></div>
-        </div>
+        <div id="w-result" hidden></div>
     </section>
 
     <!-- 计算浇水策略（英雄作物） -->
     <section class="page" data-page="strategy" hidden>
+        <header class="s-head">
+            <h1 class="s-title">算算浇水策略<span class="tag-mini">🌸 英雄作物</span></h1>
+            <p class="s-desc">现在就浇，还是先补水等一等？</p>
+        </header>
         <div class="card">
-            <h2 class="card-title">🧭 计算浇水策略<span class="pill">英雄作物</span></h2>
             <div class="field">
-                <label for="s-name">农场名称</label>
-                <input class="input" id="s-name" placeholder="例如：Aura.情">
+                <label class="lbl" for="s-name">农场名称</label>
+                <div class="inp"><span class="ico">🏷️</span><input id="s-name" placeholder="例如：Aura.情" autocomplete="off"></div>
+                <div class="recent" data-for="s-name" hidden></div>
             </div>
-            <div class="field">
-                <label>当前剩余时间</label>
-                <div class="row">
-                    <div class="unit"><input class="input" id="s-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
-                    <div class="unit"><input class="input" id="s-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+            <div class="trows">
+                <div class="field" data-field="remain">
+                    <div class="trow">
+                        <div class="tlabel"><span class="ti b-peach">⏳</span><span>当前剩余<small id="s-remain-max"></small></span></div>
+                        <div class="tcap"><input id="s-remain-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>时</span><input id="s-remain-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分</span></div>
+                    </div>
+                </div>
+                <div class="field" data-field="water">
+                    <div class="trow">
+                        <div class="tlabel"><span class="ti b-water">💧</span><span>当前水分<small id="s-water-max"></small></span></div>
+                        <div class="tcap"><input id="s-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>时</span><input id="s-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分</span></div>
+                    </div>
                 </div>
             </div>
-            <div class="field">
-                <label>当前水分时间</label>
-                <div class="row">
-                    <div class="unit"><input class="input" id="s-water-h" type="number" inputmode="numeric" min="0" placeholder="0"><span>小时</span></div>
-                    <div class="unit"><input class="input" id="s-water-m" type="number" inputmode="numeric" min="0" placeholder="0"><span>分钟</span></div>
+            <div class="target-box">
+                <div class="goal-chip">🎯 目标剩余<span class="target-value"></span><button type="button" class="target-toggle">修改</button></div>
+                <div class="goal-edit field" hidden>
+                    <div class="goal-row">
+                        <div class="tcap"><input class="target-h" type="number" inputmode="numeric" min="0"><span>时</span><input class="target-m" type="number" inputmode="numeric" min="0"><span>分</span></div>
+                        <button type="button" class="btn-side target-ok">确定</button>
+                    </div>
                 </div>
             </div>
-            <div class="target">🎯 目标剩余时间<b class="target-value"></b><button type="button" class="target-toggle">修改</button></div>
-            <div class="target-edit" hidden>
-                <div class="unit"><input class="input target-h" type="number" inputmode="numeric" min="0"><span>小时</span></div>
-                <div class="unit"><input class="input target-m" type="number" inputmode="numeric" min="0"><span>分钟</span></div>
-                <button type="button" class="side-btn target-ok">确定</button>
-            </div>
-            <div class="actions">
-                <button type="button" class="btn primary" id="s-calc">计算</button>
-                <button type="button" class="btn" id="s-save">保存到列表</button>
-            </div>
+            <button type="button" class="btn primary" id="s-calc">✨ 算一算</button>
         </div>
-
-        <div class="card">
-            <h2 class="card-title">📋 浇水策略<span class="pill" id="s-time" hidden></span></h2>
-            <div id="s-result"><div class="placeholder">填好上面的内容，点「计算」</div></div>
-        </div>
-
-        <div class="card">
-            <h2 class="card-title">🧭 浇水策略列表<span class="pill" id="s-count" hidden></span></h2>
-            <div id="s-list"></div>
-        </div>
+        <div id="s-result" hidden></div>
     </section>
 
     <nav class="tabbar">
-        <button type="button" data-tab="maturity"><span class="ic">⏳</span>成熟时间</button>
-        <button type="button" data-tab="watering"><span class="ic">💧</span>浇水时间</button>
-        <button type="button" data-tab="strategy"><span class="ic">🧭</span>浇水策略</button>
+        <button type="button" data-tab="home"><svg><use href="#i-home"/></svg>小院</button>
+        <button type="button" data-tab="maturity"><svg><use href="#i-sprout"/></svg>成熟</button>
+        <button type="button" data-tab="watering"><svg><use href="#i-drop"/></svg>浇水</button>
+        <button type="button" data-tab="strategy"><svg><use href="#i-compass"/></svg>策略</button>
     </nav>
 
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<div class="sheet-wrap" id="sheet" hidden>
+    <div class="dim" data-close></div>
+    <div class="sheet">
+        <div class="grab"></div>
+        <h3 id="sheet-title"></h3>
+        <p>删掉以后就找不回来了</p>
+        <div class="sheet-btns">
+            <button type="button" class="btn ghost" data-close>再想想</button>
+            <button type="button" class="btn danger" id="sheet-ok">删除</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -420,12 +639,21 @@ function fmtDur(min){
     return m===0 ? h+"小时" : h+"小时"+pad2(m)+"分";
 }
 
-// 毫秒 → 倒计时 "X小时YY分ZZ秒"
-function fmtCountdown(ms){
+// 分钟 → 数字放大的 "X小时YY分"
+function durHtml(min){
+    min=Math.max(Math.round(min),0);
+    let h=Math.floor(min/60);
+    let m=min%60;
+    let html=h===0 ? "<b>"+m+"</b>分" : m===0 ? "<b>"+h+"</b>小时" : "<b>"+h+"</b>小时<b>"+pad2(m)+"</b>分";
+    return "<span class='dur'>"+html+"</span>";
+}
+
+// 毫秒 → 数字放大的倒计时 "X小时YY分ZZ秒"
+function countdownHtml(ms){
     let total=Math.max(Math.floor(ms/1000),0);
     let h=Math.floor(total/3600);
     let m=Math.floor(total%3600/60);
-    return (h>0 ? h+"小时"+pad2(m)+"分" : m+"分")+pad2(total%60)+"秒";
+    return "<span class='dur'>"+(h>0 ? "<b>"+h+"</b>小时<b>"+pad2(m)+"</b>分" : "<b>"+m+"</b>分")+"<b>"+pad2(total%60)+"</b>秒</span>";
 }
 
 // 某个时间点是哪天："今天" / "明天" / "9月17日"
@@ -443,27 +671,28 @@ function hhmm(ms){
     return pad2(d.getHours())+":"+pad2(d.getMinutes());
 }
 
+function roundMin(ms){
+    return Math.round(ms/MINUTE)*MINUTE;
+}
+
 // 时间点（取整到分钟）→ "22:16" / "明天 09:46"；showToday 为 true 时今天也写上"今天"
 function clock(ms,showToday){
-    ms=Math.round(ms/MINUTE)*MINUTE;
+    ms=roundMin(ms);
     let label=dayLabel(ms);
     return label==="今天" && !showToday ? hhmm(ms) : label+" "+hhmm(ms);
 }
 
-// 时间线左边的时间：不是今天时在下面用小字写日期
-function clockHtml(ms){
-    ms=Math.round(ms/MINUTE)*MINUTE;
+// 大号时间：不是今天时前面用小字写日期
+function timeHtml(ms){
+    ms=roundMin(ms);
     let label=dayLabel(ms);
-    return hhmm(ms)+(label==="今天" ? "" : "<small>"+label+"</small>");
+    return (label==="今天" ? "" : "<small>"+label+"</small>")+hhmm(ms);
 }
 
-// 离某个时间点还有多久："还有 X" / "就是现在" / "已过"
-function untilText(at,now){
-    let diff=at-now;
-    if(diff>MINUTE){
-        return "还有 "+fmtDur(Math.ceil(diff/MINUTE));
-    }
-    return diff>-MINUTE ? "就是现在" : "已过";
+// 大号时间段：两头是同一天时日期只写一次
+function rangeHtml(from,to){
+    let same=dayLabel(roundMin(from))===dayLabel(roundMin(to));
+    return timeHtml(from)+"<span class='tilde'>~</span>"+(same ? hhmm(roundMin(to)) : timeHtml(to));
 }
 
 function escapeHtml(value){
@@ -492,6 +721,10 @@ function stepEnd(step){
     return step.to!==undefined ? step.to : step.at;
 }
 
+function stepStart(step){
+    return step.from!==undefined ? step.from : step.at;
+}
+
 function lastStep(steps){
     return steps[steps.length-1];
 }
@@ -507,20 +740,18 @@ function refillTime(step){
     return step.from!==undefined ? clock(step.from)+" ~ "+clock(step.to) : clock(step.at);
 }
 
-function nextText(step,now){
-    if(!step){
-        return "<b>✓ 已全部浇完</b>";
+// 步骤的简称："种下" / "补水" / "第二次" / "浇水"
+function stepLabel(step){
+    if(step.type==="plant"){
+        return "种下";
     }
-    if(step.type==="refill" && step.from!==undefined){
-        if(now<step.from-MINUTE){
-            return "<b>"+refillTime(step)+" 补水</b>还有 "+fmtDur(Math.ceil((step.from-now)/MINUTE))+" 开始";
-        }
-        return "<b>"+clock(step.to)+" 前补水</b>还剩 "+fmtDur(Math.floor((step.to-now)/MINUTE));
+    if(step.type==="refill"){
+        return "补水";
     }
-    return "<b>"+clock(step.at)+" "+(step.type==="refill" ? "补水" : step.title)+"</b>"+untilText(step.at,now);
+    return step.title.replace("浇水","") || "浇水";
 }
 
-// 列表里的步骤清单；已过的步骤由 refreshLive 打勾
+// 展开后的步骤清单；已过的步骤由 updateLive 打勾
 function miniSteps(steps,altText){
     let n=0;
     let items=steps.filter(function(step){
@@ -530,7 +761,7 @@ function miniSteps(steps,altText){
         let text=step.type==="refill"
             ? "补水 "+refillTime(step)
             : step.title+" "+clock(step.at)+(step.final ? " → 剩 "+fmtDur(step.remain) : "");
-        return "<li data-end='"+stepEnd(step)+"' data-num='"+num+"'><span class='mark'>"+num+"</span> "+text+"</li>";
+        return "<li data-end='"+stepEnd(step)+"' data-num='"+num+"'><span class='mark'>"+num+"</span>"+text+"</li>";
     });
     if(altText){
         items.push("<li class='alt'>"+altText+"</li>");
@@ -641,264 +872,531 @@ function loadAll(){
     }
 }
 
+// 三种记录各自的列表，删除时按 kind 找到对应的那个
+const LISTS={
+    farm:{ key:STORE.farms, get:function(){ return farms; }, set:function(v){ farms=v; } },
+    plan:{ key:STORE.plans, get:function(){ return plans; }, set:function(v){ plans=v; } },
+    strategy:{ key:STORE.strategies, get:function(){ return strategies; }, set:function(v){ strategies=v; } }
+};
 
-
-// =====================
-// 页面显示
-// =====================
-
-function setCount(id,count){
-    let pill=document.getElementById(id);
-    pill.textContent=count+" 个";
-    pill.hidden=count===0;
+function allRecords(){
+    let recs=[];
+    Object.keys(LISTS).forEach(function(kind){
+        LISTS[kind].get().forEach(function(item){
+            recs.push({ kind:kind, item:item });
+        });
+    });
+    return recs;
 }
 
-function itemTop(name,pill,id){
-    return "<div class='item-top'>"+
-        "<div class='item-name'>"+escapeHtml(name)+"</div>"+
-        "<span class='pill'>"+escapeHtml(pill)+"</span>"+
-        "<button type='button' class='del' data-id='"+escapeHtml(id)+"'>删除</button>"+
+
+
+// =====================
+// 小院
+// =====================
+
+const GREETINGS=["夜深了，琪琪宝贝 🌙","早上好，琪琪宝贝 ☀️","中午好，琪琪宝贝 🌤️","下午好，琪琪宝贝 🌼","晚上好，琪琪宝贝 🌙"];
+const EMPTY_HTML="<div class='empty'>"+
+    "<svg viewBox='0 0 120 100' aria-hidden='true'>"+
+        "<ellipse cx='60' cy='92' rx='38' ry='5' fill='#F1E3CF'/>"+
+        "<path d='M60 56V34' stroke='#7DB065' stroke-width='4' stroke-linecap='round'/>"+
+        "<path d='M60 43c0-10-7-16-19-16 0 10 7 16 19 16z' fill='#A6D089'/>"+
+        "<path d='M60 39c0-9 6-14 16-14 0 9-6 14-16 14z' fill='#7DB065'/>"+
+        "<path d='M38 58h44l-6 31H44z' fill='#E59A69'/>"+
+        "<rect x='33' y='52' width='54' height='11' rx='5' fill='#F2B184'/>"+
+    "</svg>"+
+    "<b>小院还空着呢</b>"+
+    "<span>去「成熟」算一块田，存进来就能在这里看倒计时</span>"+
+    "<button type='button' class='btn primary' data-go='maturity'>去算一块 🌱</button>"+
+"</div>";
+
+let homeFilter="all";
+let openIds={};
+let homeKeyNow="";
+
+function greetIndex(hour){
+    return hour<5 ? 0 : hour<11 ? 1 : hour<13 ? 2 : hour<18 ? 3 : 4;
+}
+
+// 作物显示用的信息；农场里存的是 CROPS 的 label，旧数据可能是别的写法
+function cropInfo(crop){
+    crop=String(crop || "");
+    if(crop.indexOf("英雄")>=0){
+        return { key:"hero", emoji:"🌸", name:"英雄作物", bg:"b-blush", total:CROPS.hero.total };
+    }
+    if(crop.indexOf("经济")>=0){
+        return { key:"eco", emoji:"🍑", name:"经济作物", bg:"b-peach", total:CROPS.eco.total };
+    }
+    return { key:"", emoji:"🌱", name:crop, bg:"b-sage", total:0 };
+}
+
+// 排序分组：0 已成熟，1 还有事要做（按时间先后），2 全部浇完
+function recordState(rec,now){
+    if(rec.kind==="farm"){
+        let finish=Number(rec.item.finishTime);
+        return finish<=now ? { group:0, time:finish, ripe:true } : { group:1, time:finish };
+    }
+    let next=nextStep(rec.item.steps,now);
+    if(next){
+        return { group:1, time:stepEnd(next), next:next };
+    }
+    return { group:2, time:-stepEnd(lastStep(rec.item.steps)) };
+}
+
+function compareRec(a,b){
+    return a.state.group-b.state.group || a.state.time-b.state.time;
+}
+
+// 记录的状态有变化（成熟了、走到下一步了）时才需要重建小院
+function homeKey(now){
+    return [new Date(now).getHours(),homeFilter].concat(allRecords().map(function(rec){
+        let state=recordState(rec,now);
+        let tail=state.ripe ? "R" : state.next ? rec.item.steps.indexOf(state.next) : "D";
+        if(rec.kind==="plan" && isNum(rec.item.ripeAt) && rec.item.ripeAt<now){
+            tail+="r";
+        }
+        return rec.kind+rec.item.id+tail;
+    })).join("|");
+}
+
+function recKey(rec){
+    return rec.kind+":"+rec.item.id;
+}
+
+function delBtn(rec){
+    return "<button type='button' class='more' data-del='"+escapeHtml(recKey(rec))+"' aria-label='删除'>⋯</button>";
+}
+
+function recTop(rec,tagClass,tagText){
+    return "<div class='rec-top'>"+
+        "<b class='rec-name'>"+escapeHtml(rec.item.name)+"</b>"+
+        "<span class='kind "+tagClass+"'>"+tagText+"</span>"+
+        delBtn(rec)+
     "</div>";
 }
 
-function cropPill(crop){
-    crop=String(crop || "");
-    if(crop.indexOf("英雄")>=0){
-        return "🌸 英雄";
+function detailHtml(rec){
+    let it=rec.item;
+    let plan=rec.kind==="plan";
+    let meta=plan
+        ? (isNum(it.plantTime) ? "🌱 种下 "+clock(it.plantTime,true) : "")
+        : (isNum(it.calcTime) ? "🧭 算于 "+clock(it.calcTime,true) : "");
+    let alt=isNum(it.alt) ? "不补水："+clock(it.alt)+(plan ? " 浇第二次" : " 浇一次")+" → 剩 "+fmtDur(it.target) : "";
+    let ripe=plan && isNum(it.ripeAt) ? "之后不再浇水："+clock(it.ripeAt,true)+" 成熟" : "";
+    return "<div class='detail'>"+
+        (meta ? "<div class='detail-meta'>"+meta+"</div>" : "")+
+        miniSteps(it.steps,alt)+
+        (ripe ? "<div class='detail-meta'>"+ripe+"</div>" : "")+
+    "</div>";
+}
+
+function stepperHtml(rec,next,now){
+    let it=rec.item;
+    let items=it.steps.map(function(step){
+        let cls=step===next ? "next" : stepEnd(step)<now-MINUTE ? "done" : "";
+        return "<li class='"+cls+"'>"+stepLabel(step)+"</li>";
+    });
+    if(rec.kind==="plan" && isNum(it.ripeAt)){
+        items.push("<li class='"+(it.ripeAt<now ? "done" : "")+"'>成熟</li>");
     }
-    return crop.indexOf("经济")>=0 ? "🍑 经济" : crop;
+    return "<ol class='mini-steps'>"+items.join("")+"</ol>";
 }
 
-function renderFarms(){
-    farms.sort(function(a,b){
-        return Number(a.finishTime)-Number(b.finishTime);
-    });
-    setCount("m-count",farms.length);
-    document.getElementById("m-list").innerHTML=farms.length===0
-        ? "<div class='empty'>还没有保存的农场</div>"
-        : farms.map(function(farm){
-            let finishTime=Number(farm.finishTime);
-            return "<div class='item'>"+
-                itemTop(farm.name,cropPill(farm.crop),farm.id)+
-                "<div class='countdown' data-finish='"+finishTime+"'></div>"+
-                "<div class='sub'>🕒 预计成熟 "+clock(finishTime,true)+"</div>"+
-            "</div>";
-        }).join("");
-    refreshLive();
+// 卡片上"下一步做什么"
+function nextHtml(rec,next){
+    let it=rec.item;
+    if(!next){
+        return "<div class='rec-main done-text'>✓ 已全部浇完</div>"+
+            "<div class='rec-sub'>"+(rec.kind==="plan" && isNum(it.ripeAt) ? clock(it.ripeAt,true)+" 成熟" : "按计划浇完啦")+"</div>";
+    }
+    if(next.type==="refill" && next.from!==undefined){
+        return "<div class='rec-main'><span class='clock'>"+rangeHtml(next.from,next.to)+"</span> 补水</div>"+
+            "<div class='rec-sub' data-live='range' data-style='long' data-from='"+next.from+"' data-to='"+next.to+"'></div>";
+    }
+    let what=next.type==="refill" ? "补水" : next.title;
+    let tail=next.type==="refill" ? "别让水干" : "浇后剩 "+fmtDur(next.remain);
+    return "<div class='rec-main'><span class='clock'>"+timeHtml(next.at)+"</span> "+what+"</div>"+
+        "<div class='rec-sub'><span data-live='at' data-t='"+next.at+"'></span> · "+tail+"</div>";
 }
 
-// 按下一步的时间排序，全部浇完的放最后
-function sortByNext(list){
+function cardHtml(rec,now){
+    let it=rec.item;
+    if(rec.kind==="farm"){
+        let crop=cropInfo(it.crop);
+        let finish=Number(it.finishTime);
+        let ripe=!!rec.state.ripe;
+        return "<article class='rec"+(ripe ? " ripe" : "")+"'>"+
+            "<div class='badge-ic "+(ripe ? "b-sage" : crop.bg)+"'>"+crop.emoji+"</div>"+
+            "<div class='rec-body'>"+
+                recTop(rec,ripe ? "k-sage" : "k-apricot","成熟")+
+                "<div class='rec-main' data-live='grow' data-t='"+finish+"'></div>"+
+                (crop.total ? "<div class='bar'><i data-bar='"+finish+"' data-total='"+crop.total*MINUTE+"'></i></div>" : "")+
+                "<div class='rec-sub'>"+clock(finish,true)+" 成熟 · "+escapeHtml(crop.name)+"</div>"+
+            "</div>"+
+        "</article>";
+    }
+    let next=rec.state.next || null;
+    let plan=rec.kind==="plan";
+    let open=!!openIds[recKey(rec)];
+    return "<article class='rec"+(next ? "" : " finished")+(open ? " open" : "")+"' data-key='"+escapeHtml(recKey(rec))+"'>"+
+        "<div class='badge-ic "+(plan ? "b-water" : "b-honey")+"'>"+(plan ? "💧" : "🧭")+"</div>"+
+        "<div class='rec-body'>"+
+            recTop(rec,plan ? "k-water" : "k-honey",plan ? "浇水" : "策略")+
+            nextHtml(rec,next)+
+            stepperHtml(rec,next,now)+
+            "<button type='button' class='toggle'>"+(open ? "收起" : "全部步骤")+"</button>"+
+            detailHtml(rec)+
+        "</div>"+
+    "</article>";
+}
+
+// 顶部大卡片：最近要做的一件事
+function heroHtml(rec){
+    let it=rec.item;
+    let name="<b>"+escapeHtml(it.name)+"</b>";
+    let start,title,time,sub,pill,art;
+    let then="";
+    if(rec.kind==="farm"){
+        let crop=cropInfo(it.crop);
+        let finish=Number(it.finishTime);
+        start=finish;
+        title="等 "+name+" 成熟";
+        time=timeHtml(finish);
+        sub=escapeHtml(crop.name)+" · 一直把水补满的话";
+        pill="<span data-live='grow' data-style='rich' data-t='"+finish+"'></span>";
+        art="<span class='hero-art hero-emoji'>"+crop.emoji+"</span>";
+    }
+    else{
+        let step=rec.state.next;
+        start=stepStart(step);
+        title="给 "+name+" "+(step.type==="refill" ? "补水" : "浇水");
+        if(step.from!==undefined){
+            time=rangeHtml(step.from,step.to);
+            sub="这段时间里随时补一次，"+clock(step.to)+" 水会干";
+            pill="<span data-live='range' data-style='rich' data-from='"+step.from+"' data-to='"+step.to+"'></span>";
+        }
+        else{
+            time=timeHtml(step.at);
+            sub=step.type==="refill" ? "按时补水，别让水干" : (step.title!=="浇水" ? step.title+" · " : "")+"浇后剩 "+fmtDur(step.remain);
+            pill="<span data-live='at' data-style='rich' data-t='"+step.at+"'></span>";
+        }
+        let after=it.steps[it.steps.indexOf(step)+1];
+        if(after){
+            then="接着 "+clock(stepStart(after))+" "+(after.type==="refill" ? "补水" : after.title);
+        }
+        else if(rec.kind==="plan" && isNum(it.ripeAt)){
+            then="之后 "+clock(it.ripeAt,true)+" 成熟";
+        }
+        art="<svg class='hero-art'><use href='#can'/></svg>";
+    }
+    let open=!!openIds[recKey(rec)];
+    return "<section class='hero"+(open ? " open" : "")+"'>"+
+        art+
+        "<div class='hero-eyebrow' data-live='now' data-t='"+start+"'></div>"+
+        delBtn(rec)+
+        "<div class='hero-title'>"+title+"</div>"+
+        "<div class='hero-time'>"+time+"</div>"+
+        "<div class='hero-sub'>"+sub+"</div>"+
+        "<div class='hero-foot'><span class='hero-pill'>"+pill+"</span>"+(then ? "<span class='hero-then'>"+then+"</span>" : "")+"</div>"+
+        (rec.kind==="farm" ? "" : "<button type='button' class='toggle' data-toggle='"+escapeHtml(recKey(rec))+"'>"+(open ? "收起" : "全部步骤")+"</button>"+detailHtml(rec))+
+    "</section>";
+}
+
+function chipsHtml(counts,total){
+    return "<div class='chips'>"+[
+        ["all","全部",total],
+        ["farm","成熟",counts.farm],
+        ["plan","浇水",counts.plan],
+        ["strategy","策略",counts.strategy]
+    ].filter(function(chip){
+        return chip[2]>0;
+    }).map(function(chip){
+        return "<button type='button' class='chip"+(homeFilter===chip[0] ? " on" : "")+"' data-filter='"+chip[0]+"'>"+chip[1]+"<i>"+chip[2]+"</i></button>";
+    }).join("")+"</div>";
+}
+
+function renderHome(){
     let now=Date.now();
-    list.sort(function(a,b){
-        let na=nextStep(a.steps,now);
-        let nb=nextStep(b.steps,now);
-        if(na && nb){
-            return stepEnd(na)-stepEnd(nb);
+    let d=new Date(now);
+    let recs=allRecords();
+    recs.forEach(function(rec){
+        rec.state=recordState(rec,now);
+    });
+    let counts={ farm:farms.length, plan:plans.length, strategy:strategies.length };
+    let kinds=Object.keys(counts).filter(function(kind){
+        return counts[kind]>0;
+    }).length;
+    if(kinds<2 || (homeFilter!=="all" && counts[homeFilter]===0)){
+        homeFilter="all";
+    }
+
+    let ripe=recs.filter(function(rec){ return rec.state.ripe; }).length;
+    let pending=recs.filter(function(rec){ return rec.state.group===1; }).length;
+    document.getElementById("h-hello").textContent=GREETINGS[greetIndex(d.getHours())];
+    document.getElementById("h-today").innerHTML=(d.getMonth()+1)+"月"+d.getDate()+"日 周"+"日一二三四五六".charAt(d.getDay())+" · "+(
+        ripe>0 ? "<b>"+ripe+" 块田可以收啦</b>"
+        : pending>0 ? pending+" 件事在等你"
+        : recs.length>0 ? "都忙完啦，歇一会儿吧"
+        : "今天也要开开心心种田呀"
+    );
+
+    let html;
+    if(recs.length===0){
+        html=EMPTY_HTML;
+    }
+    else{
+        // 筛选后最急的一件放成大卡片，其余的排在下面
+        let shown=recs.filter(function(rec){
+            return homeFilter==="all" || rec.kind===homeFilter;
+        }).sort(compareRec);
+        let hero=shown.find(function(rec){
+            return rec.state.group===1;
+        });
+        html=(hero ? heroHtml(hero) : "")+
+            (kinds>=2 ? chipsHtml(counts,recs.length) : "")+
+            shown.filter(function(rec){
+                return rec!==hero;
+            }).map(function(rec){
+                return cardHtml(rec,now);
+            }).join("");
+    }
+    document.getElementById("h-body").innerHTML=html;
+    homeKeyNow=homeKey(now);
+    updateLive(now);
+}
+
+
+
+// =====================
+// 每秒刷新的文字
+// =====================
+
+function liveText(el,now){
+    let type=el.getAttribute("data-live");
+    let style=el.getAttribute("data-style") || "";
+    let dur=style==="rich" ? durHtml : fmtDur;
+    let t=Number(el.getAttribute("data-t"));
+    if(type==="grow"){
+        let left=t-now;
+        if(style==="rich"){
+            return left>0 ? "还剩 "+countdownHtml(left) : "已经成熟啦";
         }
-        if(na || nb){
-            return na ? -1 : 1;
+        return left>0 ? countdownHtml(left)+" 后成熟" : "已经成熟啦，快去收获 🎉";
+    }
+    if(type==="range"){
+        let from=Number(el.getAttribute("data-from"));
+        let to=Number(el.getAttribute("data-to"));
+        if(now<from-MINUTE){
+            return "还有 "+dur(Math.ceil((from-now)/MINUTE))+" 开始";
         }
-        return stepEnd(lastStep(b.steps))-stepEnd(lastStep(a.steps));
+        if(now<=to){
+            let left="还剩 "+dur(Math.floor((to-now)/MINUTE));
+            return style==="rich" ? left : style==="long" ? "现在可以补 · "+left : "现在可以补";
+        }
+        return "已过";
+    }
+    if(type==="at"){
+        let diff=t-now;
+        if(diff>MINUTE){
+            return "还有 "+dur(Math.ceil(diff/MINUTE));
+        }
+        return diff>-MINUTE ? "就是现在" : "已过";
+    }
+    // type==="now"：大卡片上的小标题
+    let isNow=now>=t-MINUTE;
+    el.classList.toggle("now",isNow);
+    return isNow ? "现在就要做" : "下一件事";
+}
+
+// 只改文字和样式，不重建按钮
+function updateLive(now){
+    document.querySelectorAll("[data-live]").forEach(function(el){
+        el.innerHTML=liveText(el,now);
+    });
+
+    document.querySelectorAll("[data-bar]").forEach(function(el){
+        let left=Number(el.getAttribute("data-bar"))-now;
+        let done=1-left/Number(el.getAttribute("data-total"));
+        el.style.width=(Math.min(Math.max(done,0),1)*100).toFixed(1)+"%";
+    });
+
+    // 计算结果里的步骤：做完的打勾，下一步加光圈
+    document.querySelectorAll(".path.live").forEach(function(list){
+        let foundNext=false;
+        list.querySelectorAll("li").forEach(function(li){
+            let type=li.getAttribute("data-type");
+            let past=Number(li.getAttribute("data-end"))<now-MINUTE;
+            let isNext=!past && !foundNext && type!=="plant" && type!=="ripe";
+            foundNext=foundNext || isNext;
+            li.classList.toggle("done",past);
+            li.classList.toggle("next",isNext);
+        });
+    });
+
+    document.querySelectorAll(".mini li[data-end]").forEach(function(li){
+        let past=Number(li.getAttribute("data-end"))<now-MINUTE;
+        li.classList.toggle("passed",past);
+        li.querySelector(".mark").textContent=past ? "✓" : li.getAttribute("data-num");
     });
 }
 
-function renderPlans(){
-    sortByNext(plans);
-    setCount("w-count",plans.length);
-    document.getElementById("w-list").innerHTML=plans.length===0
-        ? "<div class='empty'>还没有保存的浇水时间</div>"
-        : plans.map(function(plan){
-            let alt=isNum(plan.alt) ? "不补水："+clock(plan.alt)+" 浇第二次 → 剩 "+fmtDur(plan.target) : "";
-            return "<div class='item' data-kind='plans' data-id='"+escapeHtml(plan.id)+"'>"+
-                itemTop(plan.name,"种下 "+clock(plan.plantTime),plan.id)+
-                "<div class='next'></div>"+
-                miniSteps(plan.steps,alt)+
-            "</div>";
-        }).join("");
-    refreshLive();
+function refreshLive(){
+    let now=Date.now();
+    if(homeKey(now)!==homeKeyNow){
+        renderHome();
+        return;
+    }
+    updateLive(now);
 }
 
-function renderStrategies(){
-    sortByNext(strategies);
-    setCount("s-count",strategies.length);
-    document.getElementById("s-list").innerHTML=strategies.length===0
-        ? "<div class='empty'>还没有保存的浇水策略</div>"
-        : strategies.map(function(item){
-            let alt=isNum(item.alt) ? "不补水："+clock(item.alt)+" 浇一次 → 剩 "+fmtDur(item.target) : "";
-            return "<div class='item' data-kind='strategies' data-id='"+escapeHtml(item.id)+"'>"+
-                itemTop(item.name,"算于 "+clock(item.calcTime),item.id)+
-                "<div class='next'></div>"+
-                miniSteps(item.steps,alt)+
-            "</div>";
-        }).join("");
-    refreshLive();
+
+
+// =====================
+// 计算结果
+// =====================
+
+function saveBtn(){
+    return "<div class='save'><button type='button' class='btn ghost' data-save><svg><use href='#i-home'/></svg>存进小院</button></div>";
 }
 
-function renderTarget(){
-    document.querySelectorAll(".target-value").forEach(function(el){
-        el.textContent=fmtDur(settings.target);
-    });
+function warnHtml(text){
+    return "<div class='card'><div class='warn'><b>做不到</b><br>"+text+"</div></div>";
 }
 
-function renderAll(){
-    renderTarget();
-    renderFarms();
-    renderPlans();
-    renderStrategies();
-}
-
-function metric(label,value,extraClass){
-    return "<div class='metric"+extraClass+"'><span>"+label+"</span><b>"+value+"</b></div>";
+function stat(label,min){
+    return "<div class='stat'><span>"+label+"</span>"+durHtml(min)+"</div>";
 }
 
 function maturityResultHtml(result){
-    return "<div class='metrics'>"+
-        metric("💧 浇水缩短",fmtDur(result.reduce),"")+
-        metric("🌱 浇水后剩余",fmtDur(result.after),"")+
-        metric("⚡ 最快成熟",fmtDur(result.fastest),"")+
-        metric("🕒 预计成熟",clock(result.finishTime,true)," hot")+
-    "</div>";
+    let crop=cropInfo(result.crop.label);
+    let finish=roundMin(result.finishTime);
+    return "<div class='ticket'>"+
+        "<div class='ticket-top'>"+
+            "<div class='t-meta'><span class='t-tag t-"+crop.key+"'>"+crop.emoji+" "+crop.name+"</span><span>按 "+hhmm(result.now)+" 算的</span></div>"+
+            "<div class='t-label'>一直把水补满的话，最快</div>"+
+            "<div class='t-big'><small>"+dayLabel(finish)+"</small><b>"+hhmm(finish)+"</b><small>成熟</small></div>"+
+            "<div class='t-count'>还要 "+durHtml(result.fastest)+"</div>"+
+        "</div>"+
+        "<div class='cut'></div>"+
+        "<div class='stats'>"+
+            stat("💧 浇水缩短",result.reduce)+
+            stat("🌱 浇水后剩",result.after)+
+            stat("⚡ 最快成熟",result.fastest)+
+        "</div>"+
+    "</div>"+
+    saveBtn();
+}
+
+// 田间小路上的一步
+function pathItem(step){
+    let icon="<svg><use href='#can'/></svg>";
+    let title=step.title;
+    let time=timeHtml(step.at);
+    let badge="<em class='badge' data-live='at' data-t='"+step.at+"'></em>";
+    let detail;
+    if(step.type==="plant"){
+        icon="🌱";
+        title="种下";
+        badge="";
+        detail="自动浇满水 · 剩 "+fmtDur(step.remain);
+    }
+    else if(step.type==="refill"){
+        icon="💧";
+        title="补水";
+        if(step.from!==undefined){
+            time=rangeHtml(step.from,step.to);
+            badge="<em class='badge' data-live='range' data-from='"+step.from+"' data-to='"+step.to+"'></em>";
+            detail="这段时间里随时补一次，"+clock(step.to)+" 水会干";
+        }
+        else{
+            detail="按时补水，别让水干";
+        }
+    }
+    else{
+        detail="浇后剩 "+(step.final ? "<span class='goal'>"+fmtDur(step.remain)+"</span>" : fmtDur(step.remain));
+    }
+    return "<li data-type='"+step.type+"' data-end='"+stepEnd(step)+"'>"+
+        "<span class='node'><i class='ic'>"+icon+"</i></span>"+
+        "<div class='pc'>"+
+            "<div class='p-row'><b>"+title+"</b><time>"+time+"</time></div>"+
+            "<p>"+detail+badge+"</p>"+
+        "</div>"+
+    "</li>";
 }
 
 function wateringResultHtml(record){
     if(!record.possible){
-        return "<div class='warn'><b>做不到</b><br>第一次浇水后剩 <span class='nw'>"+fmtDur(record.firstAfter)+"</span>，目标剩余时间不能比这个长</div>";
+        return warnHtml("第一次浇水后剩 <span class='nw'>"+fmtDur(record.firstAfter)+"</span>，目标剩余时间不能比这个长");
     }
-    let html="<ol class='timeline'>"+record.steps.map(function(step){
-        let title=step.title;
-        let badge="<em data-at='"+step.at+"'></em>";
-        let detail;
-        if(step.type==="plant"){
-            title="种下";
-            badge="<em>自动浇水</em>";
-            detail="剩 "+fmtDur(step.remain);
-        }
-        else if(step.type==="refill"){
-            title="补水";
-            if(step.from!==undefined){
-                badge="<em data-from='"+step.from+"' data-to='"+step.to+"'></em>";
-                detail=refillTime(step)+" 之间随时补一次，"+clock(step.to)+" 水会干";
-            }
-            else{
-                detail="按时补水，别让水干";
-            }
-        }
-        else{
-            detail="浇后剩 "+(step.final ? "<strong class='goal'>"+fmtDur(step.remain)+"</strong>" : fmtDur(step.remain));
-        }
-        let start=step.from!==undefined ? step.from : step.at;
-        return "<li data-type='"+step.type+"' data-end='"+stepEnd(step)+"'>"+
-            "<time>"+clockHtml(start)+"</time>"+
-            "<div><b>"+title+"</b>"+badge+"<p>"+detail+"</p></div>"+
-        "</li>";
-    }).join("")+"</ol>";
-    html+="<div class='note'>之后不再浇水的话，"+clock(record.ripeAt,true)+" 成熟</div>";
+    let waters=record.steps.filter(function(step){ return step.type==="water"; }).length;
+    let refills=record.steps.filter(function(step){ return step.type==="refill"; }).length;
+    let html="<div class='card'>"+
+        "<div class='card-h'>浇水计划<span>共浇 "+waters+" 次"+(refills ? " · 补水 "+refills+" 次" : "")+"</span></div>"+
+        "<ol class='path live'>"+
+            record.steps.map(pathItem).join("")+
+            "<li data-type='ripe' data-end='"+record.ripeAt+"'>"+
+                "<span class='node'><i class='ic'>🌾</i></span>"+
+                "<div class='pc'>"+
+                    "<div class='p-row'><b>成熟</b><time>"+timeHtml(record.ripeAt)+"</time></div>"+
+                    "<p>之后不再浇水的话</p>"+
+                "</div>"+
+            "</li>"+
+        "</ol>";
     if(isNum(record.alt)){
         html+="<div class='note'>不补水的话："+clock(record.alt)+" 浇第二次，浇后也剩 "+fmtDur(record.target)+"</div>";
     }
-    return html;
-}
-
-function stepHtml(step,num){
-    let name="浇水";
-    let time=clock(step.at);
-    let detail="浇后剩 <strong class='goal'>"+fmtDur(step.remain)+"</strong>";
-    if(step.type==="refill"){
-        name="补水";
-        time=refillTime(step);
-        detail=step.from!==undefined ? "这段时间里随时补一次，"+clock(step.to)+" 水会干" : "按时补水，别让水干";
-    }
-    return "<div class='step'><i>"+num+"</i><div>"+
-        "<div class='step-row'><span>"+name+"</span><time>"+time+"</time></div>"+
-        "<p>"+detail+"</p>"+
-    "</div></div>";
+    return html+"</div>"+saveBtn();
 }
 
 function strategyResultHtml(record){
     if(!record.possible){
-        return "<div class='warn'><b>做不到</b><br>现在浇水后只剩 <span class='nw'>"+fmtDur(record.afterNow)+"</span>，已经低于目标 <span class='nw'>"+fmtDur(record.target)+"</span></div>";
+        return warnHtml("现在浇水后只剩 <span class='nw'>"+fmtDur(record.afterNow)+"</span>，已经低于目标 <span class='nw'>"+fmtDur(record.target)+"</span>");
     }
     let more=record.afterNow-record.target;
-    let html="<div class='summary'>现在浇水后剩 <b>"+fmtDur(record.afterNow)+"</b>，"+
-        (Math.round(more)>0 ? "比目标多 <span class='nw'>"+fmtDur(more)+"</span>" : "正好是目标")+
+    let even=Math.round(more)<=0;
+    let share=even ? 100 : Math.round(record.target/record.afterNow*100);
+    let html="<div class='compare'>"+
+        "<div class='compare-meta'>按 "+hhmm(record.calcTime)+" 算的</div>"+
+        "<div class='compare-t'>现在就浇的话，浇后剩 "+durHtml(record.afterNow)+"</div>"+
+        "<div class='cbar'>"+
+            "<span class='a"+(share<22 ? " tight" : "")+"' style='width:"+share+"%'>目标 "+fmtDur(record.target)+"</span>"+
+            (even ? "" : "<span class='b"+(share>78 ? " tight" : "")+"' style='width:"+(100-share)+"%'>多 "+fmtDur(more)+"</span>")+
+        "</div>"+
+        "<div class='compare-f'>"+(even ? "正好就是目标，按下面的时间浇就行 ↓" : "比目标多 "+fmtDur(more)+"，靠「晚点再浇」用掉 ↓")+"</div>"+
     "</div>";
     let refill=record.steps.length>1;
-    html+="<div class='plan main'><div class='plan-head'>"+
-        (refill ? "方案一：先补水<span>最后浇水更早</span>" : "浇水方案<span>等的这段时间水不会干，不用补水</span>")+
+    let alt=isNum(record.alt);
+    html+="<div class='plan main'><div class='plan-h'>"+
+        (refill ? "<b>方案一 · 先补水</b><span>最后浇水更早</span>" : "<b>浇水方案</b><span>等的这段时间水不会干，不用补水</span>")+
+        (alt ? "<span class='rib'>推荐</span>" : "")+
         "</div>"+
-        record.steps.map(function(step,i){
-            return stepHtml(step,i+1);
-        }).join("")+
+        "<ol class='path live'>"+record.steps.map(pathItem).join("")+"</ol>"+
     "</div>";
-    if(isNum(record.alt)){
-        html+="<div class='plan'><div class='plan-head'>方案二：不补水<span>只浇一次</span></div>"+
-            stepHtml({ type:"water", at:record.alt, remain:record.target },1)+
+    if(alt){
+        html+="<div class='plan alt'><div class='plan-h'><b>方案二 · 不补水</b><span>只浇一次</span></div>"+
+            "<ol class='path'>"+pathItem({ type:"water", title:"浇水", at:record.alt, remain:record.target, final:true })+"</ol>"+
         "</div>";
     }
-    return html;
+    return html+saveBtn();
 }
 
-function badgeText(badge,now){
-    if(badge.hasAttribute("data-from")){
-        let from=Number(badge.getAttribute("data-from"));
-        let to=Number(badge.getAttribute("data-to"));
-        if(now<from-MINUTE){
-            return "还有 "+fmtDur(Math.ceil((from-now)/MINUTE))+" 开始";
-        }
-        return now<=to ? "现在可以补" : "已过";
+function showResult(id,html,scroll){
+    let box=document.getElementById(id);
+    box.innerHTML=html;
+    box.hidden=false;
+    box.classList.remove("result");
+    void box.offsetWidth;
+    box.classList.add("result");
+    refreshLive();
+    if(scroll){
+        box.scrollIntoView({ block:"nearest", behavior:"smooth" });
     }
-    return untilText(Number(badge.getAttribute("data-at")),now);
-}
-
-// 每秒刷新倒计时、"还有多久"和已过的步骤，只改文字和样式，不重建按钮
-function refreshLive(){
-    let now=Date.now();
-
-    document.querySelectorAll("[data-finish]").forEach(function(el){
-        let left=Number(el.getAttribute("data-finish"))-now;
-        el.innerHTML=left>0 ? "<small>还剩</small>"+fmtCountdown(left) : "已经成熟 🌱";
-        el.parentNode.classList.toggle("ripe",left<=0);
-    });
-
-    document.querySelectorAll(".timeline").forEach(function(list){
-        let foundNext=false;
-        list.querySelectorAll("li").forEach(function(li){
-            let past=Number(li.getAttribute("data-end"))<now-MINUTE;
-            let isNext=!past && !foundNext && li.getAttribute("data-type")!=="plant";
-            foundNext=foundNext || isNext;
-            li.classList.toggle("past",past);
-            li.classList.toggle("next",isNext);
-            let badge=li.querySelector("em[data-at],em[data-from]");
-            if(badge){
-                badge.textContent=badgeText(badge,now);
-            }
-        });
-    });
-
-    document.querySelectorAll(".item[data-kind]").forEach(function(item){
-        let list=item.getAttribute("data-kind")==="plans" ? plans : strategies;
-        let record=list.find(function(r){
-            return String(r.id)===item.getAttribute("data-id");
-        });
-        if(!record){
-            return;
-        }
-        let next=nextStep(record.steps,now);
-        item.querySelector(".next").innerHTML=nextText(next,now);
-        item.classList.toggle("finished",!next);
-        item.querySelectorAll("li[data-end]").forEach(function(li){
-            let past=Number(li.getAttribute("data-end"))<now-MINUTE;
-            li.classList.toggle("passed",past);
-            li.querySelector(".mark").textContent=past ? "✓" : li.getAttribute("data-num");
-        });
-    });
 }
 
 
 
 // =====================
-// 输入和按钮
+// 输入和提示
 // =====================
 
 // 读取"小时 + 分钟"两个输入框，返回总分钟数；空着按 0 算，填了负数返回 NaN
@@ -911,50 +1409,147 @@ function readMinutes(hourId,minId){
     return h*60+m;
 }
 
-// 检查剩余时间和水分时间，有问题时返回提示文字
+// 检查剩余时间和水分时间，有问题时返回出错的输入框（remain / water）和提示文字
 function checkRemainWater(crop,remain,water,remainName,canSwitchCrop){
-    if(isNaN(remain)||isNaN(water)){
-        return "时间不能填负数";
+    if(isNaN(remain)){
+        return { field:"remain", msg:"时间不能填负数" };
+    }
+    if(isNaN(water)){
+        return { field:"water", msg:"时间不能填负数" };
     }
     if(remain<=0){
-        return "请输入"+remainName;
+        return { field:"remain", msg:"请输入"+remainName };
     }
     if(remain>plantRemain(crop)){
-        return crop.name+"的"+remainName+"最多 "+fmtDur(plantRemain(crop))+(canSwitchCrop ? "，请检查作物类型或输入" : "，请检查输入");
+        return { field:"remain", msg:crop.name+"的"+remainName+"最多 "+fmtDur(plantRemain(crop))+(canSwitchCrop ? "，请检查作物类型或输入" : "，请检查输入") };
     }
     if(water>crop.maxWater){
-        return crop.name+"的水分最多 "+fmtDur(crop.maxWater)+(canSwitchCrop ? "，请检查作物类型或水分时间" : "，请检查水分时间");
+        return { field:"water", msg:crop.name+"的水分最多 "+fmtDur(crop.maxWater)+(canSwitchCrop ? "，请检查作物类型或水分时间" : "，请检查水分时间") };
     }
-    return "";
+    return null;
+}
+
+// 输错时把那一格标红，原因写在正下方
+function showError(field,msg){
+    clearError(field);
+    let box=document.createElement("div");
+    box.className="err-msg";
+    box.textContent="⚠️ "+msg;
+    field.querySelector(".inp-row,.inp,.trow,.goal-row").insertAdjacentElement("afterend",box);
+    field.classList.add("err");
+    field.scrollIntoView({ block:"nearest", behavior:"smooth" });
+}
+
+function clearError(field){
+    field.classList.remove("err");
+    let box=field.querySelector(".err-msg");
+    if(box){
+        box.remove();
+    }
+}
+
+function clearErrors(scope){
+    scope.querySelectorAll(".field.err").forEach(clearError);
+}
+
+function page(name){
+    return document.querySelector(".page[data-page='"+name+"']");
 }
 
 function readName(id){
-    let name=document.getElementById(id).value.trim();
+    let input=document.getElementById(id);
+    let name=input.value.trim();
     if(name===""){
-        alert("请输入农场名称");
+        showError(input.closest(".field"),"请输入农场名称");
+        input.focus();
     }
     return name;
 }
 
+let toastTimer=null;
 
-// 计算成熟时间：输入有误时弹窗提示并返回 null
-function calcMaturityInput(){
-    let on=document.querySelector("#m-crop button.on");
-    let crop=CROPS[on ? on.getAttribute("data-crop") : "hero"];
+function showToast(text,goHome){
+    let toast=document.getElementById("toast");
+    toast.innerHTML=escapeHtml(text)+(goHome ? "<button type='button' data-go='home'>去看看 →</button>" : "");
+    toast.hidden=true;
+    void toast.offsetWidth;
+    toast.hidden=false;
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){
+        toast.hidden=true;
+    },2600);
+}
+
+// 农场名称下面的"最近"：按保存时间从新到旧，取不重复的 3 个
+function renderRecent(){
+    let seen={};
+    let names=[];
+    allRecords().map(function(rec){
+        return rec.item;
+    }).sort(function(a,b){
+        return Number(b.id)-Number(a.id);
+    }).forEach(function(item){
+        let name=String(item.name || "").trim();
+        if(name && !seen[name]){
+            seen[name]=true;
+            names.push(name);
+        }
+    });
+    names=names.slice(0,3);
+    document.querySelectorAll(".recent").forEach(function(box){
+        box.hidden=names.length===0;
+        box.innerHTML="<span>最近</span>"+names.map(function(name){
+            return "<button type='button' data-name='"+escapeHtml(name)+"'>"+escapeHtml(name)+"</button>";
+        }).join("");
+    });
+}
+
+function renderTarget(){
+    document.querySelectorAll(".target-value").forEach(function(el){
+        el.innerHTML=durHtml(settings.target);
+    });
+}
+
+function renderAll(){
+    renderTarget();
+    renderRecent();
+    renderHome();
+}
+
+
+
+// =====================
+// 三个计算页
+// =====================
+
+function selectedCrop(){
+    let on=document.querySelector("#m-crop .crop.on");
+    return CROPS[on ? on.getAttribute("data-crop") : "hero"];
+}
+
+function renderCropHints(){
+    let crop=selectedCrop();
+    document.getElementById("m-remain-max").textContent="最多 "+fmtDur(plantRemain(crop));
+    document.getElementById("m-water-max").textContent="最多 "+fmtDur(crop.maxWater);
+}
+
+// 计算成熟时间：输入有误时标出来并返回 null
+function calcMaturityInput(scroll){
+    let form=page("maturity");
+    clearErrors(form);
+    let crop=selectedCrop();
     let remain=readMinutes("m-remain-h","m-remain-m");
     let water=readMinutes("m-water-h","m-water-m");
     let error=checkRemainWater(crop,remain,water,"剩余成熟时间",true);
     if(error){
-        alert(error);
+        showError(form.querySelector("[data-field='"+error.field+"']"),error.msg);
         return null;
     }
     let result=calcMaturity(crop,remain,water);
     result.crop=crop;
     result.now=Date.now();
     result.finishTime=result.now+Math.round(result.fastest*MINUTE);
-    document.getElementById("m-time").textContent="按现在 "+hhmm(result.now);
-    document.getElementById("m-time").hidden=false;
-    document.getElementById("m-result").innerHTML=maturityResultHtml(result);
+    showResult("m-result",maturityResultHtml(result),scroll);
     return result;
 }
 
@@ -964,7 +1559,7 @@ function saveMaturity(){
         return;
     }
     // 保存前按当前输入重新计算，避免改了输入却存进旧结果
-    let result=calcMaturityInput();
+    let result=calcMaturityInput(false);
     if(!result){
         return;
     }
@@ -975,24 +1570,25 @@ function saveMaturity(){
         finishTime:result.finishTime
     });
     saveList(STORE.farms,farms);
-    renderFarms();
-    alert("保存成功");
+    renderAll();
+    showToast("已存进小院",true);
 }
 
 
 let wateringShown=false;
 
-function calcWateringInput(){
+function calcWateringInput(scroll){
+    let form=page("watering");
+    clearErrors(form);
     let value=document.getElementById("w-plant").value;
     let plantTime=value ? new Date(value).getTime() : NaN;
     if(isNaN(plantTime)){
-        alert("请选择种下时间");
+        showError(form.querySelector("[data-field='plant']"),"请选择种下时间");
         return null;
     }
     let record=buildWatering(plantTime,settings.target);
-    document.getElementById("w-result").innerHTML=wateringResultHtml(record);
+    showResult("w-result",wateringResultHtml(record),scroll);
     wateringShown=true;
-    refreshLive();
     return record;
 }
 
@@ -1001,37 +1597,37 @@ function saveWatering(){
     if(name===""){
         return;
     }
-    let record=calcWateringInput();
+    let record=calcWateringInput(false);
     if(!record){
         return;
     }
     if(!record.possible){
-        alert("按现在的目标剩余时间算不出浇水时间，没法保存");
+        showToast("按现在的目标剩余时间算不出浇水时间，没法保存");
         return;
     }
     record.id=Date.now();
     record.name=name;
     plans.push(record);
     saveList(STORE.plans,plans);
-    renderPlans();
-    alert("保存成功");
+    renderAll();
+    showToast("已存进小院",true);
 }
 
 
 let strategyShown=false;
 
-function calcStrategyInput(){
+function calcStrategyInput(scroll){
+    let form=page("strategy");
+    clearErrors(form);
     let remain=readMinutes("s-remain-h","s-remain-m");
     let water=readMinutes("s-water-h","s-water-m");
     let error=checkRemainWater(CROPS.hero,remain,water,"当前剩余时间",false);
     if(error){
-        alert(error);
+        showError(form.querySelector("[data-field='"+error.field+"']"),error.msg);
         return null;
     }
     let record=buildStrategy(Date.now(),remain,water,settings.target);
-    document.getElementById("s-time").textContent="按现在 "+hhmm(record.calcTime);
-    document.getElementById("s-time").hidden=false;
-    document.getElementById("s-result").innerHTML=strategyResultHtml(record);
+    showResult("s-result",strategyResultHtml(record),scroll);
     strategyShown=true;
     return record;
 }
@@ -1041,29 +1637,29 @@ function saveStrategy(){
     if(name===""){
         return;
     }
-    let record=calcStrategyInput();
+    let record=calcStrategyInput(false);
     if(!record){
         return;
     }
     if(!record.possible){
-        alert("现在已经达不到目标剩余时间，没法保存");
+        showToast("现在已经达不到目标剩余时间，没法保存");
         return;
     }
     record.id=Date.now();
     record.name=name;
     strategies.push(record);
     saveList(STORE.strategies,strategies);
-    renderStrategies();
-    alert("保存成功");
+    renderAll();
+    showToast("已存进小院",true);
 }
 
 
 function showTab(name){
-    if(!document.querySelector(".page[data-page='"+name+"']")){
-        name="maturity";
+    if(!page(name)){
+        name="home";
     }
-    document.querySelectorAll(".page").forEach(function(page){
-        page.hidden=page.getAttribute("data-page")!==name;
+    document.querySelectorAll(".page").forEach(function(el){
+        el.hidden=el.getAttribute("data-page")!==name;
     });
     document.querySelectorAll(".tabbar button").forEach(function(btn){
         btn.classList.toggle("on",btn.getAttribute("data-tab")===name);
@@ -1076,38 +1672,71 @@ function showTab(name){
     }
 }
 
+function closeTargetEditors(){
+    document.querySelectorAll(".target-box").forEach(function(box){
+        box.querySelector(".goal-edit").hidden=true;
+        box.querySelector(".target-toggle").textContent="修改";
+        clearErrors(box);
+    });
+}
+
 function changeTarget(editor){
     let h=Number(editor.querySelector(".target-h").value)||0;
     let m=Number(editor.querySelector(".target-m").value)||0;
     let target=Math.round(h*60+m);
     if(h<0||m<0||target<=0){
-        alert("请输入正确的目标剩余时间");
+        showError(editor,"请输入正确的目标剩余时间");
         return;
     }
     if(target>plantRemain(CROPS.hero)){
-        alert("目标剩余时间最多 "+fmtDur(plantRemain(CROPS.hero)));
+        showError(editor,"目标剩余时间最多 "+fmtDur(plantRemain(CROPS.hero)));
         return;
     }
     settings.target=target;
     saveSettings();
-    document.querySelectorAll(".target-edit").forEach(function(el){
-        el.hidden=true;
-    });
+    closeTargetEditors();
     renderTarget();
 
     // 已经算出来的结果是按旧目标算的，提示重新计算
-    let tip="<div class='placeholder'>目标改成了 "+fmtDur(target)+"，点「计算」重新算</div>";
+    let tip="<div class='tip'>🎯 目标改成了 "+fmtDur(target)+"，点「算一算」重新算</div>";
     if(wateringShown){
-        document.getElementById("w-result").innerHTML=tip;
+        showResult("w-result",tip,false);
         wateringShown=false;
     }
     if(strategyShown){
-        document.getElementById("s-result").innerHTML=tip;
-        document.getElementById("s-time").hidden=true;
+        showResult("s-result",tip,false);
         strategyShown=false;
     }
 }
 
+
+let pendingDelete=null;
+
+function openDelete(key){
+    let i=key.indexOf(":");
+    let kind=key.slice(0,i);
+    let id=key.slice(i+1);
+    let item=LISTS[kind] && LISTS[kind].get().find(function(it){
+        return String(it.id)===id;
+    });
+    if(!item){
+        return;
+    }
+    pendingDelete={ kind:kind, id:id };
+    document.getElementById("sheet-title").textContent="删除「"+item.name+"」？";
+    document.getElementById("sheet").hidden=false;
+}
+
+function closeSheet(){
+    pendingDelete=null;
+    document.getElementById("sheet").hidden=true;
+}
+
+
+
+// =====================
+// 按钮
+// =====================
 
 document.querySelectorAll(".tabbar button").forEach(function(btn){
     btn.onclick=function(){
@@ -1115,30 +1744,42 @@ document.querySelectorAll(".tabbar button").forEach(function(btn){
     };
 });
 
-document.querySelectorAll("#m-crop button").forEach(function(btn){
+document.querySelectorAll("#m-crop .crop").forEach(function(btn){
     btn.onclick=function(){
-        document.querySelectorAll("#m-crop button").forEach(function(b){
+        document.querySelectorAll("#m-crop .crop").forEach(function(b){
             b.classList.toggle("on",b===btn);
         });
+        renderCropHints();
+        clearErrors(page("maturity"));
     };
 });
 
-document.getElementById("m-calc").onclick=calcMaturityInput;
-document.getElementById("m-save").onclick=saveMaturity;
-document.getElementById("w-calc").onclick=calcWateringInput;
-document.getElementById("w-save").onclick=saveWatering;
-document.getElementById("s-calc").onclick=calcStrategyInput;
-document.getElementById("s-save").onclick=saveStrategy;
+document.getElementById("m-calc").onclick=function(){ calcMaturityInput(true); };
+document.getElementById("w-calc").onclick=function(){ calcWateringInput(true); };
+document.getElementById("s-calc").onclick=function(){ calcStrategyInput(true); };
+
+// 结果每次重建，"存进小院"按钮用事件委托
+[["m-result",saveMaturity],["w-result",saveWatering],["s-result",saveStrategy]].forEach(function(pair){
+    document.getElementById(pair[0]).addEventListener("click",function(e){
+        if(e.target.closest("[data-save]")){
+            pair[1]();
+        }
+    });
+});
 
 document.getElementById("w-now").onclick=function(){
     document.getElementById("w-plant").value=toInputTime(Date.now());
+    clearError(page("watering").querySelector("[data-field='plant']"));
 };
 
 document.querySelectorAll(".target-toggle").forEach(function(btn){
     btn.onclick=function(){
-        let editor=btn.closest(".card").querySelector(".target-edit");
-        editor.hidden=!editor.hidden;
-        if(!editor.hidden){
+        let editor=btn.closest(".target-box").querySelector(".goal-edit");
+        let show=editor.hidden;
+        closeTargetEditors();
+        if(show){
+            editor.hidden=false;
+            btn.textContent="取消";
             editor.querySelector(".target-h").value=Math.floor(settings.target/60);
             editor.querySelector(".target-m").value=settings.target%60;
         }
@@ -1147,27 +1788,79 @@ document.querySelectorAll(".target-toggle").forEach(function(btn){
 
 document.querySelectorAll(".target-ok").forEach(function(btn){
     btn.onclick=function(){
-        changeTarget(btn.closest(".target-edit"));
+        changeTarget(btn.closest(".goal-edit"));
     };
 });
 
-// 删除按钮用事件委托，列表刷新后也不会失效
-[
-    { id:"m-list", key:STORE.farms, ask:"确定删除这个农场吗？", get:function(){ return farms; }, set:function(v){ farms=v; }, render:renderFarms },
-    { id:"w-list", key:STORE.plans, ask:"确定删除这条浇水时间吗？", get:function(){ return plans; }, set:function(v){ plans=v; }, render:renderPlans },
-    { id:"s-list", key:STORE.strategies, ask:"确定删除这条浇水策略吗？", get:function(){ return strategies; }, set:function(v){ strategies=v; }, render:renderStrategies }
-].forEach(function(list){
-    document.getElementById(list.id).addEventListener("click",function(e){
-        let btn=e.target.closest(".del");
-        if(!btn || !confirm(list.ask)){
+// "最近"里的名字点一下就填进去
+document.querySelectorAll(".recent").forEach(function(box){
+    box.addEventListener("click",function(e){
+        let btn=e.target.closest("[data-name]");
+        if(!btn){
             return;
         }
-        list.set(list.get().filter(function(item){
-            return String(item.id)!==btn.getAttribute("data-id");
-        }));
-        saveList(list.key,list.get());
-        list.render();
+        let input=document.getElementById(box.getAttribute("data-for"));
+        input.value=btn.getAttribute("data-name");
+        clearError(input.closest(".field"));
     });
+});
+
+// 小院里的按钮都用事件委托，列表刷新后也不会失效
+document.getElementById("h-body").addEventListener("click",function(e){
+    let del=e.target.closest("[data-del]");
+    if(del){
+        openDelete(del.getAttribute("data-del"));
+        return;
+    }
+    let chip=e.target.closest("[data-filter]");
+    if(chip){
+        homeFilter=chip.getAttribute("data-filter");
+        renderHome();
+        return;
+    }
+    let toggle=e.target.closest("[data-toggle],[data-key]");
+    if(toggle){
+        let key=toggle.getAttribute("data-toggle") || toggle.getAttribute("data-key");
+        openIds[key]=!openIds[key];
+        renderHome();
+    }
+});
+
+// "去看看" / "去算一块"
+document.addEventListener("click",function(e){
+    let go=e.target.closest("[data-go]");
+    if(go){
+        document.getElementById("toast").hidden=true;
+        showTab(go.getAttribute("data-go"));
+    }
+});
+
+document.querySelectorAll("#sheet [data-close]").forEach(function(el){
+    el.onclick=closeSheet;
+});
+
+document.getElementById("sheet-ok").onclick=function(){
+    if(!pendingDelete){
+        return;
+    }
+    let list=LISTS[pendingDelete.kind];
+    let id=pendingDelete.id;
+    list.set(list.get().filter(function(item){
+        return String(item.id)!==id;
+    }));
+    saveList(list.key,list.get());
+    delete openIds[pendingDelete.kind+":"+id];
+    closeSheet();
+    renderAll();
+    showToast("已删除");
+};
+
+// 改了输入就把那一格的错误提示收起来
+document.addEventListener("input",function(e){
+    let field=e.target.closest(".field.err");
+    if(field){
+        clearError(field);
+    }
 });
 
 // 输入时隐藏底部标签栏，免得被键盘顶上来挡住输入框
@@ -1183,10 +1876,13 @@ document.addEventListener("focusout",function(){
 
 loadAll();
 document.getElementById("w-plant").value=toInputTime(Date.now());
+renderCropHints();
+document.getElementById("s-remain-max").textContent="最多 "+fmtDur(plantRemain(CROPS.hero));
+document.getElementById("s-water-max").textContent="最多 "+fmtDur(CROPS.hero.maxWater);
 renderAll();
 showTab(settings.tab);
 
-// 过了零点，列表里的"今天/明天"要重新显示
+// 过了零点，"今天/明天"要重新显示
 let renderedDate=new Date().toDateString();
 setInterval(function(){
     if(new Date().toDateString()!==renderedDate){
